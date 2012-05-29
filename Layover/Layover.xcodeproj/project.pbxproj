@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0D3323981574377400E85560 /* photo1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0D3323971574377400E85560 /* photo1.jpg */; };
-		0D33239C15743A7200E85560 /* photo2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0D33239B15743A7200E85560 /* photo2.jpg */; };
 		0D3323A015743CBB00E85560 /* LOVPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D33239F15743CBB00E85560 /* LOVPhoto.m */; };
+		0D3323A315744A3F00E85560 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D3323A215744A3F00E85560 /* CoreImage.framework */; };
+		0D3323A51574567D00E85560 /* photo1.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D3323A41574567D00E85560 /* photo1.png */; };
+		0D3323A71574568200E85560 /* photo2.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D3323A61574568200E85560 /* photo2.png */; };
 		0D8B062B157432A300F1F5FE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D8B062A157432A300F1F5FE /* UIKit.framework */; };
 		0D8B062D157432A300F1F5FE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D8B062C157432A300F1F5FE /* Foundation.framework */; };
 		0D8B062F157432A300F1F5FE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D8B062E157432A300F1F5FE /* CoreGraphics.framework */; };
@@ -22,10 +23,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0D3323971574377400E85560 /* photo1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = photo1.jpg; path = Images/photo1.jpg; sourceTree = "<group>"; };
-		0D33239B15743A7200E85560 /* photo2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = photo2.jpg; path = Images/photo2.jpg; sourceTree = "<group>"; };
 		0D33239E15743CBB00E85560 /* LOVPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOVPhoto.h; sourceTree = "<group>"; };
 		0D33239F15743CBB00E85560 /* LOVPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOVPhoto.m; sourceTree = "<group>"; };
+		0D3323A215744A3F00E85560 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		0D3323A41574567D00E85560 /* photo1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = photo1.png; path = Images/photo1.png; sourceTree = "<group>"; };
+		0D3323A61574568200E85560 /* photo2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = photo2.png; path = Images/photo2.png; sourceTree = "<group>"; };
 		0D8B0626157432A300F1F5FE /* Layover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Layover.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D8B062A157432A300F1F5FE /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0D8B062C157432A300F1F5FE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -48,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0D3323A315744A3F00E85560 /* CoreImage.framework in Frameworks */,
 				0D8B062B157432A300F1F5FE /* UIKit.framework in Frameworks */,
 				0D8B062D157432A300F1F5FE /* Foundation.framework in Frameworks */,
 				0D8B062F157432A300F1F5FE /* CoreGraphics.framework in Frameworks */,
@@ -60,8 +63,8 @@
 		0D3323911574370200E85560 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				0D3323971574377400E85560 /* photo1.jpg */,
-				0D33239B15743A7200E85560 /* photo2.jpg */,
+				0D3323A41574567D00E85560 /* photo1.png */,
+				0D3323A61574568200E85560 /* photo2.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -75,9 +78,20 @@
 			name = Model;
 			sourceTree = "<group>";
 		};
+		0D3323A11574408600E85560 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				0D8B063C157432A300F1F5FE /* LOVCollageViewController.h */,
+				0D8B063D157432A300F1F5FE /* LOVCollageViewController.m */,
+				0D8B063F157432A300F1F5FE /* LOVCollageViewController.xib */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
 		0D8B061B157432A300F1F5FE = {
 			isa = PBXGroup;
 			children = (
+				0D3323A215744A3F00E85560 /* CoreImage.framework */,
 				0D8B0630157432A300F1F5FE /* Layover */,
 				0D8B0629157432A300F1F5FE /* Frameworks */,
 				0D8B0627157432A300F1F5FE /* Products */,
@@ -109,9 +123,7 @@
 				0D8B0647157432B700F1F5FE /* Views */,
 				0D8B0639157432A300F1F5FE /* LOVAppDelegate.h */,
 				0D8B063A157432A300F1F5FE /* LOVAppDelegate.m */,
-				0D8B063C157432A300F1F5FE /* LOVCollageViewController.h */,
-				0D8B063D157432A300F1F5FE /* LOVCollageViewController.m */,
-				0D8B063F157432A300F1F5FE /* LOVCollageViewController.xib */,
+				0D3323A11574408600E85560 /* View Controllers */,
 				0D8B0631157432A300F1F5FE /* Supporting Files */,
 			);
 			path = Layover;
@@ -191,8 +203,8 @@
 			files = (
 				0D8B0635157432A300F1F5FE /* InfoPlist.strings in Resources */,
 				0D8B0641157432A300F1F5FE /* LOVCollageViewController.xib in Resources */,
-				0D3323981574377400E85560 /* photo1.jpg in Resources */,
-				0D33239C15743A7200E85560 /* photo2.jpg in Resources */,
+				0D3323A51574567D00E85560 /* photo1.png in Resources */,
+				0D3323A71574568200E85560 /* photo2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

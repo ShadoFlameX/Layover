@@ -16,14 +16,18 @@
 
 @implementation LOVCollageViewController
 
+#pragma mark - Properties
+
 @synthesize collageView = m_collageView;
+
+#pragma mark - Lifecycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     LOVPhoto *photo1 = [LOVPhoto photoWithImage:[UIImage imageNamed:@"photo1.jpg"]];
-    LOVPhoto *photo2 = [LOVPhoto photoWithImage:[UIImage imageNamed:@"photo2.jpg"] blendMode:kCGBlendModeOverlay alpha:0.5f];
+    LOVPhoto *photo2 = [LOVPhoto photoWithImage:[UIImage imageNamed:@"photo2.jpg"] blendMode:kCGBlendModeScreen alpha:0.5f];
     
     [self.collageView addPhoto:photo1];
     [self.collageView addPhoto:photo2];
