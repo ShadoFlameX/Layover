@@ -59,7 +59,8 @@ static const CGFloat PanGesturePadding = 24.0f;
 {
     self.photos = [NSMutableArray array];
     
-    self.context = [CIContext contextWithOptions:nil];
+    NSDictionary *contextInfo = nil;//[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], kCIContextUseSoftwareRenderer, nil]; 
+    self.context = [CIContext contextWithOptions:contextInfo];
     
     self.matrixFilter = [CIFilter filterWithName:@"CIColorMatrix"];
     
@@ -67,6 +68,7 @@ static const CGFloat PanGesturePadding = 24.0f;
     [self addGestureRecognizer:self.panGesture];
     
     self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
+    self.imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.imageView.backgroundColor = [UIColor blackColor];
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     
@@ -91,10 +93,10 @@ static const CGFloat PanGesturePadding = 24.0f;
         self.filter = [CIFilter filterWithName:@"CIScreenBlendMode"];
     }
     
-    [self.matrixFilter setValue:((LOVPhoto *)[self.photos objectAtIndex:1]).image forKey:kCIInputImageKey];
+    [self.matrixFilter setValue:((LOVPhoto *)[self.photos objectAtIndex:1]).screenPreview forKey:kCIInputImageKey];
     [self.matrixFilter setValue:[CIVector vectorWithX:0 Y:0 Z:0 W:((LOVPhoto *)[self.photos objectAtIndex:1]).alpha] forKey:@"inputAVector"];
             
-    [self.filter setValue:((LOVPhoto *)[self.photos objectAtIndex:0]).image forKey:kCIInputBackgroundImageKey];
+    [self.filter setValue:((LOVPhoto *)[self.photos objectAtIndex:0]).screenPreview forKey:kCIInputBackgroundImageKey];
     [self.filter setValue:[self.matrixFilter outputImage] forKey:kCIInputImageKey];
     
     self.outputImage = [self.filter outputImage];

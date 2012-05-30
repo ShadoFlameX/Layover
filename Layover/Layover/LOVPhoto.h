@@ -12,6 +12,7 @@
 @interface LOVPhoto : NSObject
 
 @property (nonatomic,strong) CIImage *image;
+@property (nonatomic,strong,readonly) CIImage *screenPreview;
 @property (nonatomic,assign) CGBlendMode blendMode;
 @property (nonatomic,assign) CGFloat alpha;
 
