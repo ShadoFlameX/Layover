@@ -21,9 +21,7 @@
 {
     if (!m_screenPreview) {
         CGFloat screenScale = 1.0f;//[UIScreen mainScreen].scale;
-        
-        NSLog(@"extend width: %f",self.image.extent.size.width);
-        
+                
         CGFloat scaleFactorX = [UIScreen mainScreen].bounds.size.width * screenScale / self.image.extent.size.width;
         CGFloat scaleFactorY = [UIScreen mainScreen].bounds.size.height * screenScale / self.image.extent.size.height;
         CGFloat imageScaleFactor = MIN(scaleFactorX, scaleFactorY);

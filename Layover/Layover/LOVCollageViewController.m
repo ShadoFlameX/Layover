@@ -13,9 +13,14 @@
 
 static const NSUInteger FileNotFoundErrorCode = 2;
 
-@interface LOVCollageViewController ()
+@interface LOVCollageViewController () {
+    dispatch_queue_t backgroundQueue;
+}
 
 @property (nonatomic,strong,readonly) UIImagePickerController *imagePicker;
+@property (nonatomic,strong) UIActivityIndicatorView *loadingView;
+
+- (void)addCollageImage:(UIImage *)image;
 
 @end
 
@@ -25,6 +30,7 @@ static const NSUInteger FileNotFoundErrorCode = 2;
 
 @synthesize collageView = m_collageView;
 @synthesize imagePicker = m_imagePicker;
+@synthesize loadingView = m_loadingView;
 
 - (UIImagePickerController *)imagePicker
 {
@@ -38,14 +44,31 @@ static const NSUInteger FileNotFoundErrorCode = 2;
 
 #pragma mark - Lifecycle
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        backgroundQueue = dispatch_queue_create("com.skeuo.backgroundqueue", DISPATCH_QUEUE_CONCURRENT);        
+    }
+    return self;
+}
+
 - (void)dealloc
 {
     m_imagePicker.delegate = nil;
+    
+    dispatch_release(backgroundQueue);
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    self.loadingView.center = CGPointMake(self.view.bounds.size.width/2.0f, self.view.bounds.size.height/2.0f);
+    self.loadingView.frame = CGRectIntegral(self.loadingView.frame);
+    self.loadingView.hidesWhenStopped = YES;
+    [self.view addSubview:self.loadingView];
 }
 
 - (void)viewDidUnload
@@ -88,19 +111,10 @@ static const NSUInteger FileNotFoundErrorCode = 2;
     [self presentModalViewController:self.imagePicker animated:YES];
 }
 
-#pragma mark - UIImagePickerControllerDelegate methods
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+- (void)addCollageImage:(UIImage *)image
 {
-    [picker dismissModalViewControllerAnimated:YES];
+    NSData *imageData = UIImagePNGRepresentation(image);
     
-    NSData *imgData = UIImagePNGRepresentation([info objectForKey:@"UIImagePickerControllerOriginalImage"]);
-    
-    if (!imgData) {
-        NSAssert(imgData, @"Error, UIImagePickerController returned no image data.");
-        return;
-    }
-
     NSURL *fileURL = nil;
     NSUInteger i = 0;
     NSError *error = nil;
@@ -108,22 +122,46 @@ static const NSUInteger FileNotFoundErrorCode = 2;
         fileURL = [[[NSFileManager defaultManager] URLForImagesDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"image-%d.png",i]];
         i++;
     } while ([fileURL checkResourceIsReachableAndReturnError:&error]);
-        
+    
     if (error && [((NSError *)[[error userInfo] objectForKey:NSUnderlyingErrorKey]) code] != FileNotFoundErrorCode) {
         NSLog(@"%@",error);
         return;
     }
     
-    BOOL success = [imgData writeToURL:fileURL atomically:YES];
+    BOOL success = [imageData writeToURL:fileURL atomically:YES];
     
     if (!success) {
         NSLog(@"Failed writing image to URL: %@",fileURL);
         return;
     }
-        
+    
     LOVPhoto *photo = [LOVPhoto photoWithImage:[CIImage imageWithContentsOfURL:fileURL]];
     
-    [self.collageView addPhoto:photo];
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [self.collageView addPhoto:photo];
+        [self.loadingView stopAnimating];
+    });
+
+}
+
+#pragma mark - UIImagePickerControllerDelegate methods
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [picker dismissModalViewControllerAnimated:YES];
+    
+    UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+    
+    if (!image) {
+        NSAssert(image, @"Error, UIImagePickerController returned no image.");
+        return;
+    }
+    
+    [self.loadingView startAnimating];
+    
+    dispatch_async(backgroundQueue, ^() {
+        [self addCollageImage:image];
+    });
 }
 
 @end

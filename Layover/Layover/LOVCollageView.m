@@ -79,6 +79,9 @@ static const CGFloat PanGesturePadding = 24.0f;
 
 - (void)addPhoto:(LOVPhoto *)photo;
 {
+    if (self.photos.count == 2) {
+        [self.photos removeObjectAtIndex:0];
+    }
     [self.photos addObject:photo];
     
     [self updateFilters];
