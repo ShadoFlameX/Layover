@@ -14,12 +14,12 @@
 @synthesize blendMode = m_blendMode;
 @synthesize alpha = m_alpha;
 
-+ (LOVPhoto *)photoWithImage:(UIImage *)image
++ (LOVPhoto *)photoWithImage:(CIImage *)image
 {
     return [self photoWithImage:image blendMode:kCGBlendModeNormal alpha:1.0f];
 }
 
-+ (LOVPhoto *)photoWithImage:(UIImage *)image blendMode:(CGBlendMode)blendMode alpha:(CGFloat)alpha
++ (LOVPhoto *)photoWithImage:(CIImage *)image blendMode:(CGBlendMode)blendMode alpha:(CGFloat)alpha
 {
     LOVPhoto *photo = [[LOVPhoto alloc] init];
     photo.image = image;

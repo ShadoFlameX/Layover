@@ -9,15 +9,21 @@
 #import "LOVCollageView.h"
 #import "LOVPhoto.h"
 
+static const CGFloat PanGesturePadding = 24.0f;
+
 @interface LOVCollageView ()
 
 @property (nonatomic,strong) NSMutableArray *photos;
 @property (nonatomic,strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic,strong) UIImageView *imageView;
+@property (nonatomic,strong) CIImage *outputImage;
+@property (nonatomic,strong) CIContext *context;
 @property (nonatomic,strong) CIFilter *filter;
+@property (nonatomic,strong) CIFilter *matrixFilter;
 
 - (void)setup;
 - (void)updateFilters;
+- (void)logCoreImage;
 
 @end
 
@@ -26,7 +32,10 @@
 @synthesize photos = m_photos;
 @synthesize panGesture = m_panGesture;
 @synthesize imageView = m_imageView;
-@synthesize filter;
+@synthesize outputImage = m_outputImage;
+@synthesize context = m_context;
+@synthesize filter = m_filter;
+@synthesize matrixFilter = m_matrixFilter;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -50,13 +59,20 @@
 {
     self.photos = [NSMutableArray array];
     
+    self.context = [CIContext contextWithOptions:nil];
+    
+    self.matrixFilter = [CIFilter filterWithName:@"CIColorMatrix"];
+    
     self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
     [self addGestureRecognizer:self.panGesture];
     
     self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
+    self.imageView.backgroundColor = [UIColor blackColor];
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     
     [self addSubview:self.imageView];
+    
+//    [self logCoreImage];
 }
 
 - (void)addPhoto:(LOVPhoto *)photo;
@@ -70,50 +86,25 @@
 {
     if (self.photos.count < 2)
         return;
-        
-//    CIContext *context = [CIContext contextWithOptions:nil];
-//    
-////    NSLog(@"%@",[CIFilter filterNamesInCategory:kCICategoryBuiltIn]);
-//    
-//    if (!self.filter) {
-//        self.filter = [CIFilter filterWithName:@"CIColorBurnBlendMode"];
-//    }
-//    
-////    NSLog(@"%@",[self.filter attributes]);
-////    NSLog(@"%@",[self.filter inputKeys]);
-//    
-//    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"photo1" ofType:@"png"];
-//    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
-//    CIImage *img1 = [CIImage imageWithContentsOfURL:fileURL];
-//
-//    filePath = [[NSBundle mainBundle] pathForResource:@"photo2" ofType:@"png"];
-//    fileURL = [NSURL fileURLWithPath:filePath];
-//    CIImage *img2 = [CIImage imageWithContentsOfURL:fileURL];
-//    
-//    [self.filter setValue:img1 forKey:@"inputBackgroundImage"];
-//    [self.filter setValue:img2 forKey:@"inputImage"];
-////    NSNumber *alphaNum = [NSNumber numberWithFloat:((LOVPhoto *)[self.photos objectAtIndex:1]).alpha]; 
-//    
-//    CIImage *outputImage = [self.filter outputImage];
-//    
-//    CGImageRef cgimg = [context createCGImage:outputImage fromRect:[outputImage extent]];
-//    UIImage *newImg = [UIImage imageWithCGImage:cgimg];
-//    
-//    self.imageView.image = newImg;
-//    
-//    CGImageRelease(cgimg);
     
-    [self setNeedsDisplay];
-}
-
-- (void)drawRect:(CGRect)rect
-{
-    if (self.photos.count == 0)
-        return;
+    if (!self.filter) {
+        self.filter = [CIFilter filterWithName:@"CIScreenBlendMode"];
+    }
     
-    [self.photos enumerateObjectsUsingBlock:^(LOVPhoto *photo, NSUInteger idx, BOOL *stop) {
-        [photo.image drawInRect:rect blendMode:photo.blendMode alpha:photo.alpha];
-    }];
+    [self.matrixFilter setValue:((LOVPhoto *)[self.photos objectAtIndex:1]).image forKey:kCIInputImageKey];
+    [self.matrixFilter setValue:[CIVector vectorWithX:0 Y:0 Z:0 W:((LOVPhoto *)[self.photos objectAtIndex:1]).alpha] forKey:@"inputAVector"];
+            
+    [self.filter setValue:((LOVPhoto *)[self.photos objectAtIndex:0]).image forKey:kCIInputBackgroundImageKey];
+    [self.filter setValue:[self.matrixFilter outputImage] forKey:kCIInputImageKey];
+    
+    self.outputImage = [self.filter outputImage];
+    
+    CGImageRef cgimg = [self.context createCGImage:self.outputImage fromRect:[self.outputImage extent]];
+    UIImage *newImg = [UIImage imageWithCGImage:cgimg];
+    
+    self.imageView.image = newImg;
+    
+    CGImageRelease(cgimg);    
 }
 
 #pragma mark - Actions
@@ -121,14 +112,36 @@
 - (void)handlePan:(UIGestureRecognizer *)gestureRecognizer
 {
     if (self.photos.count > 1) {
-                
-        CGFloat newAlpha = [self.panGesture locationInView:self].x/self.frame.size.width;
+        CGFloat posX = [self.panGesture locationInView:self].x;
+        posX -= PanGesturePadding;
         
+        CGFloat newAlpha = posX/(self.frame.size.width - PanGesturePadding*2);
+        
+        newAlpha = MAX(0.0f, newAlpha);
+        newAlpha = MIN(1.0f, newAlpha);
+
         LOVPhoto *photo = [self.photos objectAtIndex:1];
         photo.alpha = newAlpha;
+        
+        NSLog(@"Alpha: %f",newAlpha);
         
         [self updateFilters];
     }
 }
+
+#pragma mark -
+
+- (void)logCoreImage
+{
+    for (NSString *name in [CIFilter filterNamesInCategory:kCICategoryBuiltIn]) {
+        NSLog(@"%@ -------------------------------------------------------------",name);
+        CIFilter *filter = [CIFilter filterWithName:name];
+        
+//        NSLog(@"%@",[filter attributes]);
+        NSLog(@"%@",[filter inputKeys]);
+
+    }
+}
+
 
 @end
