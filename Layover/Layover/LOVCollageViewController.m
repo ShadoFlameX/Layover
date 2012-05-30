@@ -9,6 +9,7 @@
 #import "LOVCollageViewController.h"
 #import "LOVCollageView.h"
 #import "LOVPhoto.h"
+#import "NSFileManager+LayoverExtensions.h"
 
 static const NSUInteger FileNotFoundErrorCode = 2;
 
@@ -36,6 +37,11 @@ static const NSUInteger FileNotFoundErrorCode = 2;
 }
 
 #pragma mark - Lifecycle
+
+- (void)dealloc
+{
+    m_imagePicker.delegate = nil;
+}
 
 - (void)viewDidLoad
 {
@@ -94,12 +100,12 @@ static const NSUInteger FileNotFoundErrorCode = 2;
         NSAssert(imgData, @"Error, UIImagePickerController returned no image data.");
         return;
     }
-    NSURL *documentsFolderURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+
     NSURL *fileURL = nil;
     NSUInteger i = 0;
     NSError *error = nil;
     do {
-        fileURL = [documentsFolderURL URLByAppendingPathComponent:[NSString stringWithFormat:@"image-%d.png",i]];
+        fileURL = [[[NSFileManager defaultManager] URLForImagesDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"image-%d.png",i]];
         i++;
     } while ([fileURL checkResourceIsReachableAndReturnError:&error]);
         

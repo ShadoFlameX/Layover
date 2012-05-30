@@ -11,6 +11,7 @@
 		0D3323A315744A3F00E85560 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D3323A215744A3F00E85560 /* CoreImage.framework */; };
 		0D3323A51574567D00E85560 /* photo1.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D3323A41574567D00E85560 /* photo1.png */; };
 		0D3323A71574568200E85560 /* photo2.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D3323A61574568200E85560 /* photo2.png */; };
+		0D6CCBF81575F3A80086CEAB /* NSFileManager+LayoverExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6CCBF71575F3A80086CEAB /* NSFileManager+LayoverExtensions.m */; };
 		0D8B062B157432A300F1F5FE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D8B062A157432A300F1F5FE /* UIKit.framework */; };
 		0D8B062D157432A300F1F5FE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D8B062C157432A300F1F5FE /* Foundation.framework */; };
 		0D8B062F157432A300F1F5FE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D8B062E157432A300F1F5FE /* CoreGraphics.framework */; };
@@ -28,6 +29,8 @@
 		0D3323A215744A3F00E85560 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		0D3323A41574567D00E85560 /* photo1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = photo1.png; path = Images/photo1.png; sourceTree = "<group>"; };
 		0D3323A61574568200E85560 /* photo2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = photo2.png; path = Images/photo2.png; sourceTree = "<group>"; };
+		0D6CCBF61575F3A80086CEAB /* NSFileManager+LayoverExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+LayoverExtensions.h"; sourceTree = "<group>"; };
+		0D6CCBF71575F3A80086CEAB /* NSFileManager+LayoverExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+LayoverExtensions.m"; sourceTree = "<group>"; };
 		0D8B0626157432A300F1F5FE /* Layover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Layover.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D8B062A157432A300F1F5FE /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0D8B062C157432A300F1F5FE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -88,6 +91,15 @@
 			name = "View Controllers";
 			sourceTree = "<group>";
 		};
+		0D6CCBF11575F36A0086CEAB /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				0D6CCBF61575F3A80086CEAB /* NSFileManager+LayoverExtensions.h */,
+				0D6CCBF71575F3A80086CEAB /* NSFileManager+LayoverExtensions.m */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		0D8B061B157432A300F1F5FE = {
 			isa = PBXGroup;
 			children = (
@@ -119,6 +131,7 @@
 		0D8B0630157432A300F1F5FE /* Layover */ = {
 			isa = PBXGroup;
 			children = (
+				0D6CCBF11575F36A0086CEAB /* Extensions */,
 				0D33239D15743CA400E85560 /* Model */,
 				0D8B0647157432B700F1F5FE /* Views */,
 				0D8B0639157432A300F1F5FE /* LOVAppDelegate.h */,
@@ -220,6 +233,7 @@
 				0D8B063E157432A300F1F5FE /* LOVCollageViewController.m in Sources */,
 				0D8B064D1574336300F1F5FE /* LOVCollageView.m in Sources */,
 				0D3323A015743CBB00E85560 /* LOVPhoto.m in Sources */,
+				0D6CCBF81575F3A80086CEAB /* NSFileManager+LayoverExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

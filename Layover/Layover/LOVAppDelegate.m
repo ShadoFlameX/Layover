@@ -7,8 +7,8 @@
 //
 
 #import "LOVAppDelegate.h"
-
 #import "LOVCollageViewController.h"
+#import "NSFileManager+LayoverExtensions.h"
 
 @implementation LOVAppDelegate
 
@@ -17,6 +17,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {    
+    NSError *error = nil;
+    [[NSFileManager defaultManager] removeItemAtURL:[[NSFileManager defaultManager] URLForImagesDirectory] error:&error];
+    if (error) {
+        NSLog(@"%@",error);
+    }
+    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
