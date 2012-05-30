@@ -10,6 +10,8 @@
 #import "LOVCollageView.h"
 #import "LOVPhoto.h"
 
+static const NSUInteger FileNotFoundErrorCode = 2;
+
 @interface LOVCollageViewController ()
 
 @property (nonatomic,strong,readonly) UIImagePickerController *imagePicker;
@@ -38,20 +40,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-        
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"photo1" ofType:@"png"];
-    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
-
-    LOVPhoto *photo1 = [LOVPhoto photoWithImage:[CIImage imageWithContentsOfURL:fileURL]];
-    
-    filePath = [[NSBundle mainBundle] pathForResource:@"photo2" ofType:@"png"];
-    fileURL = [NSURL fileURLWithPath:filePath];
-
-    LOVPhoto *photo2 = [LOVPhoto photoWithImage:[CIImage imageWithContentsOfURL:fileURL] blendMode:kCGBlendModeScreen alpha:0.5f];
-    
-    [self.collageView addPhoto:photo1];
-    [self.collageView addPhoto:photo2];
-    
 }
 
 - (void)viewDidUnload
@@ -98,10 +86,38 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    NSLog(@"%@",[info objectForKey:@"UIImagePickerControllerOriginalImage"]);
     [picker dismissModalViewControllerAnimated:YES];
+    
+    NSData *imgData = UIImagePNGRepresentation([info objectForKey:@"UIImagePickerControllerOriginalImage"]);
+    
+    if (!imgData) {
+        NSAssert(imgData, @"Error, UIImagePickerController returned no image data.");
+        return;
+    }
+    NSURL *documentsFolderURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL *fileURL = nil;
+    NSUInteger i = 0;
+    NSError *error = nil;
+    do {
+        fileURL = [documentsFolderURL URLByAppendingPathComponent:[NSString stringWithFormat:@"image-%d.png",i]];
+        i++;
+    } while ([fileURL checkResourceIsReachableAndReturnError:&error]);
+        
+    if (error && [((NSError *)[[error userInfo] objectForKey:NSUnderlyingErrorKey]) code] != FileNotFoundErrorCode) {
+        NSLog(@"%@",error);
+        return;
+    }
+    
+    BOOL success = [imgData writeToURL:fileURL atomically:YES];
+    
+    if (!success) {
+        NSLog(@"Failed writing image to URL: %@",fileURL);
+        return;
+    }
+        
+    LOVPhoto *photo = [LOVPhoto photoWithImage:[CIImage imageWithContentsOfURL:fileURL]];
+    
+    [self.collageView addPhoto:photo];
 }
-
-
 
 @end

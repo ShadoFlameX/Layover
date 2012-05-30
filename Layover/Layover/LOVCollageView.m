@@ -122,9 +122,7 @@ static const CGFloat PanGesturePadding = 24.0f;
 
         LOVPhoto *photo = [self.photos objectAtIndex:1];
         photo.alpha = newAlpha;
-        
-        NSLog(@"Alpha: %f",newAlpha);
-        
+                
         [self updateFilters];
     }
 }
