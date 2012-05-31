@@ -11,12 +11,12 @@
 
 @interface LOVPhoto : NSObject
 
-@property (nonatomic,strong) CIImage *image;
-@property (nonatomic,strong,readonly) CIImage *screenPreview;
+@property (nonatomic,strong) UIImage *image;
+@property (nonatomic,strong,readonly) UIImage *previewImage;
 @property (nonatomic,assign) CGBlendMode blendMode;
 @property (nonatomic,assign) CGFloat alpha;
 
-+ (LOVPhoto *)photoWithImage:(CIImage *)image;
-+ (LOVPhoto *)photoWithImage:(CIImage *)image blendMode:(CGBlendMode)blendMode alpha:(CGFloat)alpha;
++ (LOVPhoto *)photoWithImage:(UIImage *)image;
++ (LOVPhoto *)photoWithImage:(UIImage *)image blendMode:(CGBlendMode)blendMode alpha:(CGFloat)alpha;
 
 @end

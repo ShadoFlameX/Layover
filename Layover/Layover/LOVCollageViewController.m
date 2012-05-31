@@ -7,20 +7,25 @@
 //
 
 #import "LOVCollageViewController.h"
-#import "LOVCollageView.h"
 #import "LOVPhoto.h"
+#import "LOVCollage.h"
 #import "NSFileManager+LayoverExtensions.h"
 
 static const NSUInteger FileNotFoundErrorCode = 2;
+static const CGFloat PanGesturePadding = 24.0f;
+
 
 @interface LOVCollageViewController () {
     dispatch_queue_t backgroundQueue;
 }
 
+@property (nonatomic,strong) LOVCollage *collage;
+@property (nonatomic,strong) IBOutlet UIImageView *imageView;
 @property (nonatomic,strong,readonly) UIImagePickerController *imagePicker;
 @property (nonatomic,strong) UIActivityIndicatorView *loadingView;
+@property (nonatomic,strong) UIPanGestureRecognizer *panGesture;
 
-- (void)addCollageImage:(UIImage *)image;
+- (void)addImage:(UIImage *)image;
 
 @end
 
@@ -28,9 +33,11 @@ static const NSUInteger FileNotFoundErrorCode = 2;
 
 #pragma mark - Properties
 
-@synthesize collageView = m_collageView;
+@synthesize collage = m_collage;
+@synthesize imageView = m_imageView;
 @synthesize imagePicker = m_imagePicker;
 @synthesize loadingView = m_loadingView;
+@synthesize panGesture = m_panGesture;
 
 - (UIImagePickerController *)imagePicker
 {
@@ -64,10 +71,16 @@ static const NSUInteger FileNotFoundErrorCode = 2;
 {
     [super viewDidLoad];
     
+    self.collage = [[LOVCollage alloc] init];
+    
     self.loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     self.loadingView.center = CGPointMake(self.view.bounds.size.width/2.0f, self.view.bounds.size.height/2.0f);
     self.loadingView.frame = CGRectIntegral(self.loadingView.frame);
     self.loadingView.hidesWhenStopped = YES;
+    
+    self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+    [self.view addGestureRecognizer:self.panGesture];
+    
     [self.view addSubview:self.loadingView];
 }
 
@@ -111,7 +124,7 @@ static const NSUInteger FileNotFoundErrorCode = 2;
     [self presentModalViewController:self.imagePicker animated:YES];
 }
 
-- (void)addCollageImage:(UIImage *)image
+- (void)addImage:(UIImage *)image
 {
     NSData *imageData = UIImagePNGRepresentation(image);
     
@@ -135,13 +148,37 @@ static const NSUInteger FileNotFoundErrorCode = 2;
         return;
     }
     
-    LOVPhoto *photo = [LOVPhoto photoWithImage:[CIImage imageWithContentsOfURL:fileURL]];
+    LOVPhoto *photo = [LOVPhoto photoWithImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:fileURL]]];
+    [self.collage addPhoto:photo];
+    [self.collage previewImage:YES];
     
     dispatch_async(dispatch_get_main_queue(), ^() {
-        [self.collageView addPhoto:photo];
+        self.imageView.image = self.collage.previewImage;
         [self.loadingView stopAnimating];
     });
+}
 
+- (void)handlePan:(UIGestureRecognizer *)gestureRecognizer
+{
+    if (self.collage.photos.count > 1) {
+        CGFloat posX = [self.panGesture locationInView:self.view].x;
+        posX -= PanGesturePadding;
+        
+        CGFloat newAlpha = posX/(self.view.frame.size.width - PanGesturePadding*2);
+        
+        newAlpha = MAX(0.0f, newAlpha);
+        newAlpha = MIN(1.0f, newAlpha);
+        
+        LOVPhoto *photo = [self.collage.photos objectAtIndex:1];
+        photo.alpha = newAlpha;
+        
+        dispatch_async(backgroundQueue, ^() {
+            [self.collage previewImage:YES];
+            dispatch_async(dispatch_get_main_queue(), ^() {
+                self.imageView.image = self.collage.previewImage;
+            });
+        });
+    }
 }
 
 #pragma mark - UIImagePickerControllerDelegate methods
@@ -160,7 +197,7 @@ static const NSUInteger FileNotFoundErrorCode = 2;
     [self.loadingView startAnimating];
     
     dispatch_async(backgroundQueue, ^() {
-        [self addCollageImage:image];
+        [self addImage:image];
     });
 }
 

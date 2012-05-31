@@ -12,8 +12,6 @@
 
 @interface LOVCollageViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
-@property (nonatomic,strong) IBOutlet LOVCollageView *collageView;
-
 - (IBAction)showCamera:(id)sender;
 - (IBAction)showPhotoPicker:(id)sender;
 

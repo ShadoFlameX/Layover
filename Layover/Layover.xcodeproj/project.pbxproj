@@ -11,6 +11,9 @@
 		0D3323A315744A3F00E85560 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D3323A215744A3F00E85560 /* CoreImage.framework */; };
 		0D3323A51574567D00E85560 /* photo1.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D3323A41574567D00E85560 /* photo1.png */; };
 		0D3323A71574568200E85560 /* photo2.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D3323A61574568200E85560 /* photo2.png */; };
+		0D6690441576299A00D7FA89 /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D66903F1576299A00D7FA89 /* UIImage+Alpha.m */; };
+		0D6690451576299A00D7FA89 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6690411576299A00D7FA89 /* UIImage+Resize.m */; };
+		0D6690461576299A00D7FA89 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6690431576299A00D7FA89 /* UIImage+RoundedCorner.m */; };
 		0D6CCBF81575F3A80086CEAB /* NSFileManager+LayoverExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6CCBF71575F3A80086CEAB /* NSFileManager+LayoverExtensions.m */; };
 		0D8B062B157432A300F1F5FE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D8B062A157432A300F1F5FE /* UIKit.framework */; };
 		0D8B062D157432A300F1F5FE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D8B062C157432A300F1F5FE /* Foundation.framework */; };
@@ -20,15 +23,22 @@
 		0D8B063B157432A300F1F5FE /* LOVAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B063A157432A300F1F5FE /* LOVAppDelegate.m */; };
 		0D8B063E157432A300F1F5FE /* LOVCollageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B063D157432A300F1F5FE /* LOVCollageViewController.m */; };
 		0D8B0641157432A300F1F5FE /* LOVCollageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D8B063F157432A300F1F5FE /* LOVCollageViewController.xib */; };
-		0D8B064D1574336300F1F5FE /* LOVCollageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B064C1574336300F1F5FE /* LOVCollageView.m */; };
+		0DC3E44A15773C240053D93D /* LOVCollage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC3E44915773C240053D93D /* LOVCollage.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0D0EF8A91576227B00FED9CA /* CGGeometry+LayoverExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CGGeometry+LayoverExtensions.h"; sourceTree = "<group>"; };
 		0D33239E15743CBB00E85560 /* LOVPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOVPhoto.h; sourceTree = "<group>"; };
 		0D33239F15743CBB00E85560 /* LOVPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOVPhoto.m; sourceTree = "<group>"; };
 		0D3323A215744A3F00E85560 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		0D3323A41574567D00E85560 /* photo1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = photo1.png; path = Images/photo1.png; sourceTree = "<group>"; };
 		0D3323A61574568200E85560 /* photo2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = photo2.png; path = Images/photo2.png; sourceTree = "<group>"; };
+		0D66903E1576299A00D7FA89 /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
+		0D66903F1576299A00D7FA89 /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Alpha.m"; sourceTree = "<group>"; };
+		0D6690401576299A00D7FA89 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
+		0D6690411576299A00D7FA89 /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
+		0D6690421576299A00D7FA89 /* UIImage+RoundedCorner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+RoundedCorner.h"; sourceTree = "<group>"; };
+		0D6690431576299A00D7FA89 /* UIImage+RoundedCorner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RoundedCorner.m"; sourceTree = "<group>"; };
 		0D6CCBF61575F3A80086CEAB /* NSFileManager+LayoverExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+LayoverExtensions.h"; sourceTree = "<group>"; };
 		0D6CCBF71575F3A80086CEAB /* NSFileManager+LayoverExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+LayoverExtensions.m"; sourceTree = "<group>"; };
 		0D8B0626157432A300F1F5FE /* Layover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Layover.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -44,8 +54,8 @@
 		0D8B063C157432A300F1F5FE /* LOVCollageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LOVCollageViewController.h; sourceTree = "<group>"; };
 		0D8B063D157432A300F1F5FE /* LOVCollageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LOVCollageViewController.m; sourceTree = "<group>"; };
 		0D8B0640157432A300F1F5FE /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/LOVCollageViewController.xib; sourceTree = "<group>"; };
-		0D8B064B1574336300F1F5FE /* LOVCollageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOVCollageView.h; sourceTree = "<group>"; };
-		0D8B064C1574336300F1F5FE /* LOVCollageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOVCollageView.m; sourceTree = "<group>"; };
+		0DC3E44815773C240053D93D /* LOVCollage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOVCollage.h; sourceTree = "<group>"; };
+		0DC3E44915773C240053D93D /* LOVCollage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOVCollage.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +87,8 @@
 			children = (
 				0D33239E15743CBB00E85560 /* LOVPhoto.h */,
 				0D33239F15743CBB00E85560 /* LOVPhoto.m */,
+				0DC3E44815773C240053D93D /* LOVCollage.h */,
+				0DC3E44915773C240053D93D /* LOVCollage.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -94,8 +106,15 @@
 		0D6CCBF11575F36A0086CEAB /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				0D66903E1576299A00D7FA89 /* UIImage+Alpha.h */,
+				0D66903F1576299A00D7FA89 /* UIImage+Alpha.m */,
+				0D6690401576299A00D7FA89 /* UIImage+Resize.h */,
+				0D6690411576299A00D7FA89 /* UIImage+Resize.m */,
+				0D6690421576299A00D7FA89 /* UIImage+RoundedCorner.h */,
+				0D6690431576299A00D7FA89 /* UIImage+RoundedCorner.m */,
 				0D6CCBF61575F3A80086CEAB /* NSFileManager+LayoverExtensions.h */,
 				0D6CCBF71575F3A80086CEAB /* NSFileManager+LayoverExtensions.m */,
+				0D0EF8A91576227B00FED9CA /* CGGeometry+LayoverExtensions.h */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -157,8 +176,6 @@
 		0D8B0647157432B700F1F5FE /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				0D8B064B1574336300F1F5FE /* LOVCollageView.h */,
-				0D8B064C1574336300F1F5FE /* LOVCollageView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -231,9 +248,12 @@
 				0D8B0637157432A300F1F5FE /* main.m in Sources */,
 				0D8B063B157432A300F1F5FE /* LOVAppDelegate.m in Sources */,
 				0D8B063E157432A300F1F5FE /* LOVCollageViewController.m in Sources */,
-				0D8B064D1574336300F1F5FE /* LOVCollageView.m in Sources */,
 				0D3323A015743CBB00E85560 /* LOVPhoto.m in Sources */,
 				0D6CCBF81575F3A80086CEAB /* NSFileManager+LayoverExtensions.m in Sources */,
+				0D6690441576299A00D7FA89 /* UIImage+Alpha.m in Sources */,
+				0D6690451576299A00D7FA89 /* UIImage+Resize.m in Sources */,
+				0D6690461576299A00D7FA89 /* UIImage+RoundedCorner.m in Sources */,
+				0DC3E44A15773C240053D93D /* LOVCollage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
