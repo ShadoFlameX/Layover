@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#import <AssetsLibrary/AssetsLibrary.h>
 #import "LOVCollageViewController.h"
 #import "LOVPhoto.h"
 #import "LOVCollage.h"
@@ -14,6 +15,7 @@
 enum  {
     LOVCollageViewControllerActionSheetAddPhoto = 0,
     LOVCollageViewControllerActionSheetEffects,
+    LOVCollageViewControllerActionSheetUseLastPhoto,
     LOVCollageViewControllerActionSheetClearPhotos
 };
 
@@ -26,6 +28,7 @@ static const CGFloat PanGesturePadding = 24.0f;
 }
 
 @property (nonatomic,strong) LOVCollage *collage;
+@property (nonatomic,strong) ALAssetsLibrary *assetsLibrary;
 @property (nonatomic,strong) IBOutlet UIImageView *imageView;
 @property (nonatomic,strong,readonly) UIImagePickerController *imagePicker;
 @property (nonatomic,strong) UIActivityIndicatorView *loadingView;
@@ -40,6 +43,7 @@ static const CGFloat PanGesturePadding = 24.0f;
 #pragma mark - Properties
 
 @synthesize collage = m_collage;
+@synthesize assetsLibrary = m_assetsLibrary;
 @synthesize imageView = m_imageView;
 @synthesize imagePicker = m_imagePicker;
 @synthesize loadingView = m_loadingView;
@@ -149,6 +153,40 @@ static const CGFloat PanGesturePadding = 24.0f;
     [effectsSheet showInView:self.view];
 }
 
+- (void)useLastPhotoTaken
+{
+    if (!self.assetsLibrary) {
+        self.assetsLibrary = [[ALAssetsLibrary alloc] init];
+    }
+    
+    [self.assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {        
+        
+        // TODO: why is this block running twice?!?!
+        __block BOOL photoAdded = NO;
+        
+        if (group) {
+            [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                
+                ALAssetRepresentation *rep = [result defaultRepresentation];
+                CGImageRef imageRef = [rep fullResolutionImage];
+                
+                UIImage *lastPhoto = [UIImage imageWithCGImage:imageRef scale:rep.scale orientation:rep.orientation];
+                
+                if (!photoAdded && lastPhoto) {
+                    [self addImage:lastPhoto];
+                    photoAdded = YES;
+                }
+                
+                *stop = YES;
+            }];
+        }
+        *stop = YES;
+    
+    } failureBlock:^(NSError *error) {
+        NSLog(@"%@",error);
+    }];    
+}
+
 - (void)addImage:(UIImage *)image
 {
     NSData *imageData = UIImagePNGRepresentation(image);
@@ -238,7 +276,8 @@ static const CGFloat PanGesturePadding = 24.0f;
             [self showPhotoPicker:nil];
         
         } else if (buttonIndex == 2) {
-        
+            [self useLastPhotoTaken];
+            
         } else if (buttonIndex == 3) {
             UIActionSheet *clearPhotosActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to clear all photos?",@"action sheet title") delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"") destructiveButtonTitle:NSLocalizedString(@"Clear Photos", @"") otherButtonTitles:nil];
             clearPhotosActionSheet.tag = LOVCollageViewControllerActionSheetClearPhotos;
@@ -327,6 +366,7 @@ static const CGFloat PanGesturePadding = 24.0f;
                 self.imageView.image = self.collage.previewImage;
             });
         });
+    
     } else if (actionSheet.tag == LOVCollageViewControllerActionSheetClearPhotos) {
         if (buttonIndex == 0) {
             [self.collage removeAllPhotos];

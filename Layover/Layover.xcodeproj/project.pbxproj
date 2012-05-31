@@ -24,6 +24,7 @@
 		0D8B063E157432A300F1F5FE /* LOVCollageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B063D157432A300F1F5FE /* LOVCollageViewController.m */; };
 		0D8B0641157432A300F1F5FE /* LOVCollageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D8B063F157432A300F1F5FE /* LOVCollageViewController.xib */; };
 		0DC3E44A15773C240053D93D /* LOVCollage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC3E44915773C240053D93D /* LOVCollage.m */; };
+		0DC3E44D15775B550053D93D /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DC3E44C15775B550053D93D /* AssetsLibrary.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		0D8B0640157432A300F1F5FE /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/LOVCollageViewController.xib; sourceTree = "<group>"; };
 		0DC3E44815773C240053D93D /* LOVCollage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOVCollage.h; sourceTree = "<group>"; };
 		0DC3E44915773C240053D93D /* LOVCollage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOVCollage.m; sourceTree = "<group>"; };
+		0DC3E44C15775B550053D93D /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0DC3E44D15775B550053D93D /* AssetsLibrary.framework in Frameworks */,
 				0D3323A315744A3F00E85560 /* CoreImage.framework in Frameworks */,
 				0D8B062B157432A300F1F5FE /* UIKit.framework in Frameworks */,
 				0D8B062D157432A300F1F5FE /* Foundation.framework in Frameworks */,
@@ -122,7 +125,6 @@
 		0D8B061B157432A300F1F5FE = {
 			isa = PBXGroup;
 			children = (
-				0D3323A215744A3F00E85560 /* CoreImage.framework */,
 				0D8B0630157432A300F1F5FE /* Layover */,
 				0D8B0629157432A300F1F5FE /* Frameworks */,
 				0D8B0627157432A300F1F5FE /* Products */,
@@ -140,6 +142,8 @@
 		0D8B0629157432A300F1F5FE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0DC3E44C15775B550053D93D /* AssetsLibrary.framework */,
+				0D3323A215744A3F00E85560 /* CoreImage.framework */,
 				0D8B062A157432A300F1F5FE /* UIKit.framework */,
 				0D8B062C157432A300F1F5FE /* Foundation.framework */,
 				0D8B062E157432A300F1F5FE /* CoreGraphics.framework */,
