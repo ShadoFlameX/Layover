@@ -65,7 +65,7 @@ static const CGFloat PanGesturePadding = 24.0f;
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        backgroundQueue = dispatch_queue_create("com.skeuo.backgroundqueue", DISPATCH_QUEUE_CONCURRENT);        
+        backgroundQueue = dispatch_queue_create("com.skeuo.backgroundqueue", DISPATCH_QUEUE_SERIAL);        
     }
     return self;
 }
@@ -84,6 +84,7 @@ static const CGFloat PanGesturePadding = 24.0f;
     self.collage = [[LOVCollage alloc] init];
     
     self.loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    self.loadingView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
     self.loadingView.center = CGPointMake(self.view.bounds.size.width/2.0f, self.view.bounds.size.height/2.0f);
     self.loadingView.frame = CGRectIntegral(self.loadingView.frame);
     self.loadingView.hidesWhenStopped = YES;
@@ -92,6 +93,9 @@ static const CGFloat PanGesturePadding = 24.0f;
     [self.view addGestureRecognizer:self.panGesture];
     
     [self.view addSubview:self.loadingView];
+    
+    [self addImage:[UIImage imageNamed:@"photo1.png"]];
+    [self addImage:[UIImage imageNamed:@"photo2.png"]];
 }
 
 - (void)viewDidUnload
@@ -159,6 +163,8 @@ static const CGFloat PanGesturePadding = 24.0f;
         self.assetsLibrary = [[ALAssetsLibrary alloc] init];
     }
     
+    __weak LOVCollageViewController *weakSelf = self; 
+    
     [self.assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {        
         
         // TODO: why is this block running twice?!?!
@@ -166,14 +172,19 @@ static const CGFloat PanGesturePadding = 24.0f;
         
         if (group) {
             [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-                
-                ALAssetRepresentation *rep = [result defaultRepresentation];
-                CGImageRef imageRef = [rep fullResolutionImage];
-                
-                UIImage *lastPhoto = [UIImage imageWithCGImage:imageRef scale:rep.scale orientation:rep.orientation];
-                
-                if (!photoAdded && lastPhoto) {
-                    [self addImage:lastPhoto];
+                if (!photoAdded && result) {
+                    ALAssetRepresentation *rep = [result defaultRepresentation];
+                    CGImageRef imageRef = [rep fullResolutionImage];
+                    UIImage *lastPhoto = [UIImage imageWithCGImage:imageRef scale:rep.scale orientation:rep.orientation];
+                    
+                    if (lastPhoto) {
+                        [weakSelf.loadingView startAnimating];
+                        
+                        dispatch_async(backgroundQueue, ^() {
+                            [weakSelf addImage:lastPhoto];
+                        });
+                    }
+                    
                     photoAdded = YES;
                 }
                 
@@ -235,12 +246,8 @@ static const CGFloat PanGesturePadding = 24.0f;
         LOVPhoto *photo = [self.collage.photos objectAtIndex:1];
         photo.alpha = newAlpha;
         
-        dispatch_async(backgroundQueue, ^() {
-            [self.collage previewImage:YES];
-            dispatch_async(dispatch_get_main_queue(), ^() {
-                self.imageView.image = self.collage.previewImage;
-            });
-        });
+        [self.collage previewImage:YES];
+        self.imageView.image = self.collage.previewImage;
     }
 }
 
