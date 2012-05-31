@@ -125,4 +125,10 @@
     self.previewImage = nil;
 }
 
+- (void)removeAllPhotos
+{
+    [self.mutablePhotos removeAllObjects];
+    self.previewImage = nil;
+}
+
 @end

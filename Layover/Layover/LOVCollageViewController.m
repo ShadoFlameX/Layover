@@ -11,6 +11,12 @@
 #import "LOVCollage.h"
 #import "NSFileManager+LayoverExtensions.h"
 
+enum  {
+    LOVCollageViewControllerActionSheetAddPhoto = 0,
+    LOVCollageViewControllerActionSheetEffects,
+    LOVCollageViewControllerActionSheetClearPhotos
+};
+
 static const NSUInteger FileNotFoundErrorCode = 2;
 static const CGFloat PanGesturePadding = 24.0f;
 
@@ -124,12 +130,21 @@ static const CGFloat PanGesturePadding = 24.0f;
     [self presentModalViewController:self.imagePicker animated:YES];
 }
 
+- (IBAction)showAddPhoto:(id)sender
+{
+    UIActionSheet *addPhotoSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Camera", @"Photo Library", @"Last Photo Taken", @"Clear Photos", nil];
+    addPhotoSheet.tag = LOVCollageViewControllerActionSheetAddPhoto;
+    
+    [addPhotoSheet showInView:self.view];
+}
+
 - (IBAction)showEffects:(id)sender
 {
     if (self.collage.photos.count < 2)
         return;
     
     UIActionSheet *effectsSheet = [[UIActionSheet alloc] initWithTitle:@"Effects" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Normal", @"Multiply", @"Darken", @"Screen", @"Overlay", @"Darken", @"Lighten", @"Color Dodge", @"Color Burn", @"Soft Light", @"Hard Light", @"Difference", @"Exclusion", @"Hue", @"Saturation", @"Color", @"Luminosity", nil];
+    effectsSheet.tag = LOVCollageViewControllerActionSheetEffects;
     
     [effectsSheet showInView:self.view];
 }
@@ -215,71 +230,109 @@ static const CGFloat PanGesturePadding = 24.0f;
 
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    CGBlendMode blendMode = kCGBlendModeNormal;
+    if (actionSheet.tag == LOVCollageViewControllerActionSheetAddPhoto) {
+        if (buttonIndex == 0) {
+            [self showCamera:nil];
+        
+        } else if (buttonIndex == 1) {
+            [self showPhotoPicker:nil];
+        
+        } else if (buttonIndex == 2) {
+        
+        } else if (buttonIndex == 3) {
+            UIActionSheet *clearPhotosActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to clear all photos?",@"action sheet title") delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"") destructiveButtonTitle:NSLocalizedString(@"Clear Photos", @"") otherButtonTitles:nil];
+            clearPhotosActionSheet.tag = LOVCollageViewControllerActionSheetClearPhotos;
+            
+            [clearPhotosActionSheet showInView:self.view];
+        }
     
-    switch (buttonIndex) {
-        case 1:
-            blendMode = kCGBlendModeMultiply;
-            break;
-        case 2:
-            blendMode = kCGBlendModeDarken;
-            break;
-        case 3:
-            blendMode = kCGBlendModeScreen;
-            break;
-        case 4:
-            blendMode = kCGBlendModeOverlay;
-            break;
-        case 5:
-            blendMode = kCGBlendModeDarken;
-            break;
-        case 6:
-            blendMode = kCGBlendModeLighten;
-            break;
-        case 7:
-            blendMode = kCGBlendModeColorDodge;
-            break;
-        case 8:
-            blendMode = kCGBlendModeColorBurn;
-            break;
-        case 9:
-            blendMode = kCGBlendModeSoftLight;
-            break;
-        case 10:
-            blendMode = kCGBlendModeHardLight;
-            break;
-        case 11:
-            blendMode = kCGBlendModeDifference;
-            break;
-        case 12:
-            blendMode = kCGBlendModeExclusion;
-            break;
-        case 13:
-            blendMode = kCGBlendModeHue;
-            break;
-        case 14:
-            blendMode = kCGBlendModeSaturation;
-            break;
-        case 15:
-            blendMode = kCGBlendModeColor;
-            break;
-        case 16:
-            blendMode = kCGBlendModeLuminosity;
-            break;
-        default:
-            break;
-    }
-    
-    LOVPhoto *photo = [self.collage.photos objectAtIndex:1];
-    photo.blendMode = blendMode;
-    
-    dispatch_async(backgroundQueue, ^() {
-        [self.collage previewImage:YES];
-        dispatch_async(dispatch_get_main_queue(), ^() {
-            self.imageView.image = self.collage.previewImage;
+    } else if (actionSheet.tag == LOVCollageViewControllerActionSheetEffects) {
+        CGBlendMode blendMode = kCGBlendModeNormal;
+        
+        switch (buttonIndex) {
+            case 1:
+                blendMode = kCGBlendModeMultiply;
+                break;
+                
+            case 2:
+                blendMode = kCGBlendModeDarken;
+                break;
+                
+            case 3:
+                blendMode = kCGBlendModeScreen;
+                break;
+                
+            case 4:
+                blendMode = kCGBlendModeOverlay;
+                break;
+                
+            case 5:
+                blendMode = kCGBlendModeDarken;
+                break;
+                
+            case 6:
+                blendMode = kCGBlendModeLighten;
+                break;
+                
+            case 7:
+                blendMode = kCGBlendModeColorDodge;
+                break;
+                
+            case 8:
+                blendMode = kCGBlendModeColorBurn;
+                break;
+                
+            case 9:
+                blendMode = kCGBlendModeSoftLight;
+                break;
+                
+            case 10:
+                blendMode = kCGBlendModeHardLight;
+                break;
+                
+            case 11:
+                blendMode = kCGBlendModeDifference;
+                break;
+                
+            case 12:
+                blendMode = kCGBlendModeExclusion;
+                break;
+                
+            case 13:
+                blendMode = kCGBlendModeHue;
+                break;
+                
+            case 14:
+                blendMode = kCGBlendModeSaturation;
+                break;
+                
+            case 15:
+                blendMode = kCGBlendModeColor;
+                break;
+                
+            case 16:
+                blendMode = kCGBlendModeLuminosity;
+                break;
+                
+            default:
+                break;
+        }
+        
+        LOVPhoto *photo = [self.collage.photos objectAtIndex:1];
+        photo.blendMode = blendMode;
+        
+        dispatch_async(backgroundQueue, ^() {
+            [self.collage previewImage:YES];
+            dispatch_async(dispatch_get_main_queue(), ^() {
+                self.imageView.image = self.collage.previewImage;
+            });
         });
-    });
-
+    } else if (actionSheet.tag == LOVCollageViewControllerActionSheetClearPhotos) {
+        if (buttonIndex == 0) {
+            [self.collage removeAllPhotos];
+            self.imageView.image = nil;
+        }
+    }
 }
 
 

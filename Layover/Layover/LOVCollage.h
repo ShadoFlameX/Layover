@@ -17,6 +17,7 @@
 @property (nonatomic,readonly) UIImage *outputImage;
 
 - (void)addPhoto:(LOVPhoto *)photo;
+- (void)removeAllPhotos;
 
 - (UIImage *)previewImage:(BOOL)forceUpdate;
 
