@@ -93,6 +93,7 @@
         CGImageRef imageRef = photo.previewImage.CGImage;
         CGRect photoRect = CGRectMake(0, 0, CGImageGetWidth(photo.previewImage.CGImage), CGImageGetHeight(photo.previewImage.CGImage));
         CGContextSetAlpha(context, photo.alpha);
+        
         CGContextSetBlendMode(context, photo.blendMode);
         CGContextDrawImage(context, CGRectCenterRectInRect(photoRect, contextRect), imageRef);
     }];

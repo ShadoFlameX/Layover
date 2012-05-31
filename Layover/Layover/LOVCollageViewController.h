@@ -10,9 +10,10 @@
 
 @class LOVCollageView;
 
-@interface LOVCollageViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface LOVCollageViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIActionSheetDelegate>
 
 - (IBAction)showCamera:(id)sender;
 - (IBAction)showPhotoPicker:(id)sender;
+- (IBAction)showEffects:(id)sender;
 
 @end
