@@ -92,7 +92,7 @@ static const CGFloat PanGesturePadding = 24.0f;
     [super viewDidLoad];
     
     self.collage = [[LOVCollage alloc] init];
-    
+        
     self.gridView.hidden = YES;
     
     self.loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
@@ -282,6 +282,15 @@ static const CGFloat PanGesturePadding = 24.0f;
         self.selectedPhoto = photo;
         self.imageView.image = self.collage.previewImage;
         [self.loadingView stopAnimating];
+        
+        self.imageView.transform = CGAffineTransformMakeScale(1.15f, 1.15f);
+        
+        if (self.imageView.alpha != 1.0f) {
+            [UIView animateWithDuration:0.35f animations:^{
+                self.imageView.alpha = 1.0f;
+                self.imageView.transform = CGAffineTransformIdentity;
+            }];
+        }
     });
 }
 
@@ -460,8 +469,15 @@ static const CGFloat PanGesturePadding = 24.0f;
     
     } else if (actionSheet.tag == LOVCollageViewControllerActionSheetClearPhotos) {
         if (buttonIndex == 0) {
-            [self.collage removeAllPhotos];
-            self.imageView.image = nil;
+            [UIView animateWithDuration:0.35f animations:^{
+                self.imageView.alpha = 0.0f;
+                self.imageView.transform = CGAffineTransformMakeScale(1.15f, 1.15f);
+            
+            } completion:^(BOOL finished) {
+                [self.collage removeAllPhotos];
+                self.imageView.image = nil;
+                self.imageView.transform = CGAffineTransformIdentity;
+            }];
         }
     }
 }
