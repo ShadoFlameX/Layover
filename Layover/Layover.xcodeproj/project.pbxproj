@@ -12,6 +12,8 @@
 		0D3323A51574567D00E85560 /* photo1.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D3323A41574567D00E85560 /* photo1.png */; };
 		0D3323A71574568200E85560 /* photo2.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D3323A61574568200E85560 /* photo2.png */; };
 		0D33B60C15789F48003DAF0C /* LOVGridView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D33B60B15789F48003DAF0C /* LOVGridView.m */; };
+		0D33B6111578B0AB003DAF0C /* LOVEffectsPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D33B60F1578B0AB003DAF0C /* LOVEffectsPickerViewController.m */; };
+		0D33B6121578B0AB003DAF0C /* LOVEffectsPickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D33B6101578B0AB003DAF0C /* LOVEffectsPickerViewController.xib */; };
 		0D6690441576299A00D7FA89 /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D66903F1576299A00D7FA89 /* UIImage+Alpha.m */; };
 		0D6690451576299A00D7FA89 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6690411576299A00D7FA89 /* UIImage+Resize.m */; };
 		0D6690461576299A00D7FA89 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6690431576299A00D7FA89 /* UIImage+RoundedCorner.m */; };
@@ -39,6 +41,9 @@
 		0D3323A61574568200E85560 /* photo2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = photo2.png; path = Images/photo2.png; sourceTree = "<group>"; };
 		0D33B60A15789F48003DAF0C /* LOVGridView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOVGridView.h; sourceTree = "<group>"; };
 		0D33B60B15789F48003DAF0C /* LOVGridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOVGridView.m; sourceTree = "<group>"; };
+		0D33B60E1578B0AB003DAF0C /* LOVEffectsPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOVEffectsPickerViewController.h; sourceTree = "<group>"; };
+		0D33B60F1578B0AB003DAF0C /* LOVEffectsPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOVEffectsPickerViewController.m; sourceTree = "<group>"; };
+		0D33B6101578B0AB003DAF0C /* LOVEffectsPickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LOVEffectsPickerViewController.xib; sourceTree = "<group>"; };
 		0D66903E1576299A00D7FA89 /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
 		0D66903F1576299A00D7FA89 /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Alpha.m"; sourceTree = "<group>"; };
 		0D6690401576299A00D7FA89 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
@@ -111,6 +116,9 @@
 				0D8B063C157432A300F1F5FE /* LOVCollageViewController.h */,
 				0D8B063D157432A300F1F5FE /* LOVCollageViewController.m */,
 				0D8B063F157432A300F1F5FE /* LOVCollageViewController.xib */,
+				0D33B60E1578B0AB003DAF0C /* LOVEffectsPickerViewController.h */,
+				0D33B60F1578B0AB003DAF0C /* LOVEffectsPickerViewController.m */,
+				0D33B6101578B0AB003DAF0C /* LOVEffectsPickerViewController.xib */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -252,6 +260,7 @@
 				0D3323A71574568200E85560 /* photo2.png in Resources */,
 				0DE1E7941578887900BC0000 /* photo3.png in Resources */,
 				0DE1E7951578887900BC0000 /* photo4.png in Resources */,
+				0D33B6121578B0AB003DAF0C /* LOVEffectsPickerViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,6 +281,7 @@
 				0D6690461576299A00D7FA89 /* UIImage+RoundedCorner.m in Sources */,
 				0DC3E44A15773C240053D93D /* LOVCollage.m in Sources */,
 				0D33B60C15789F48003DAF0C /* LOVGridView.m in Sources */,
+				0D33B6111578B0AB003DAF0C /* LOVEffectsPickerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

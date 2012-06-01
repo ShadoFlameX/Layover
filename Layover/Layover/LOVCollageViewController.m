@@ -11,6 +11,7 @@
 #import "LOVPhoto.h"
 #import "LOVCollage.h"
 #import "LOVGridView.h"
+#import "LOVEffectsPickerViewController.h"
 #import "NSFileManager+LayoverExtensions.h"
 
 enum  {
@@ -203,10 +204,17 @@ static const CGFloat PanGesturePadding = 24.0f;
     if (self.collage.photos.count < 2)
         return;
     
-    UIActionSheet *effectsSheet = [[UIActionSheet alloc] initWithTitle:@"Effects" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Normal", @"Multiply", @"Darken", @"Screen", @"Overlay", @"Darken", @"Lighten", @"Color Dodge", @"Color Burn", @"Soft Light", @"Hard Light", @"Difference", @"Exclusion", @"Hue", @"Saturation", @"Color", @"Luminosity", nil];
-    effectsSheet.tag = LOVCollageViewControllerActionSheetEffects;
+    LOVEffectsPickerViewController *effectsPicker = [[LOVEffectsPickerViewController alloc] initWithNibName:@"LOVEffectsPickerViewController" bundle:nil];
     
-    [effectsSheet showInView:self.view];
+    UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:effectsPicker];
+    navCon.navigationBar.barStyle = UIBarStyleBlack;
+    
+    [self presentViewController:navCon animated:YES completion:nil];
+    
+//    UIActionSheet *effectsSheet = [[UIActionSheet alloc] initWithTitle:@"Effects" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Normal", @"Multiply", @"Darken", @"Screen", @"Overlay", @"Darken", @"Lighten", @"Color Dodge", @"Color Burn", @"Soft Light", @"Hard Light", @"Difference", @"Exclusion", @"Hue", @"Saturation", @"Color", @"Luminosity", nil];
+//    effectsSheet.tag = LOVCollageViewControllerActionSheetEffects;
+//    
+//    [effectsSheet showInView:self.view];
 }
 
 - (void)useLastPhotoTaken
