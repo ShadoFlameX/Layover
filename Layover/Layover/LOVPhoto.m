@@ -15,6 +15,7 @@
 
 @synthesize image = m_image;
 @synthesize previewImage = m_previewImage;
+@synthesize transform = m_transform;
 @synthesize blendMode = m_blendMode;
 @synthesize alpha = m_alpha;
 
@@ -54,6 +55,7 @@
     photo.image = image;
     photo.blendMode = blendMode;
     photo.alpha = alpha;
+    photo.transform = CGAffineTransformIdentity;
     
     return photo;
 }

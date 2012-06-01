@@ -14,6 +14,7 @@
 
 - (IBAction)showCamera:(id)sender;
 - (IBAction)showPhotoPicker:(id)sender;
+- (IBAction)beginRotationMode:(id)sender;
 - (IBAction)showEffects:(id)sender;
 
 @end

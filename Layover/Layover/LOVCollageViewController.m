@@ -25,6 +25,7 @@ static const CGFloat PanGesturePadding = 24.0f;
 
 @interface LOVCollageViewController () {
     dispatch_queue_t backgroundQueue;
+    CGAffineTransform initialTransform;
 }
 
 @property (nonatomic,strong) LOVCollage *collage;
@@ -32,7 +33,8 @@ static const CGFloat PanGesturePadding = 24.0f;
 @property (nonatomic,strong) IBOutlet UIImageView *imageView;
 @property (nonatomic,strong,readonly) UIImagePickerController *imagePicker;
 @property (nonatomic,strong) UIActivityIndicatorView *loadingView;
-@property (nonatomic,strong) UIPanGestureRecognizer *panGesture;
+@property (nonatomic,strong) UIPanGestureRecognizer *alphaGesture;
+@property (nonatomic,strong) UIRotationGestureRecognizer *rotationGesture;
 
 - (void)addImage:(UIImage *)image;
 
@@ -47,7 +49,8 @@ static const CGFloat PanGesturePadding = 24.0f;
 @synthesize imageView = m_imageView;
 @synthesize imagePicker = m_imagePicker;
 @synthesize loadingView = m_loadingView;
-@synthesize panGesture = m_panGesture;
+@synthesize alphaGesture = m_panGesture;
+@synthesize rotationGesture = m_rotationGesture;
 
 - (UIImagePickerController *)imagePicker
 {
@@ -89,13 +92,13 @@ static const CGFloat PanGesturePadding = 24.0f;
     self.loadingView.frame = CGRectIntegral(self.loadingView.frame);
     self.loadingView.hidesWhenStopped = YES;
     
-    self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
-    [self.view addGestureRecognizer:self.panGesture];
+    self.alphaGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+    [self.view addGestureRecognizer:self.alphaGesture];
     
     [self.view addSubview:self.loadingView];
     
-    [self addImage:[UIImage imageNamed:@"photo1.png"]];
-    [self addImage:[UIImage imageNamed:@"photo2.png"]];
+    [self addImage:[UIImage imageNamed:@"photo3.png"]];
+    [self addImage:[UIImage imageNamed:@"photo4.png"]];
 }
 
 - (void)viewDidUnload
@@ -144,6 +147,17 @@ static const CGFloat PanGesturePadding = 24.0f;
     addPhotoSheet.tag = LOVCollageViewControllerActionSheetAddPhoto;
     
     [addPhotoSheet showInView:self.view];
+}
+
+- (IBAction)beginRotationMode:(id)sender
+{
+    self.view.gestureRecognizers = nil;
+    
+    if (!self.rotationGesture) {
+        self.rotationGesture = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(handleRotation:)];
+    }
+    
+    [self.view addGestureRecognizer:self.rotationGesture];
 }
 
 - (IBAction)showEffects:(id)sender
@@ -232,10 +246,10 @@ static const CGFloat PanGesturePadding = 24.0f;
     });
 }
 
-- (void)handlePan:(UIGestureRecognizer *)gestureRecognizer
+- (void)handlePan:(UIPanGestureRecognizer *)gestureRecognizer
 {
     if (self.collage.photos.count > 1) {
-        CGFloat posX = [self.panGesture locationInView:self.view].x;
+        CGFloat posX = [self.alphaGesture locationInView:self.view].x;
         posX -= PanGesturePadding;
         
         CGFloat newAlpha = posX/(self.view.frame.size.width - PanGesturePadding*2);
@@ -250,6 +264,21 @@ static const CGFloat PanGesturePadding = 24.0f;
         self.imageView.image = self.collage.previewImage;
     }
 }
+
+- (void)handleRotation:(UIRotationGestureRecognizer *)gestureRecognizer
+{
+    LOVPhoto *photo = [self.collage.photos objectAtIndex:self.collage.photos.count - 1];
+    
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        initialTransform = photo.transform;
+    }
+    
+    photo.transform = CGAffineTransformRotate(initialTransform, -gestureRecognizer.rotation);
+    
+    [self.collage previewImage:YES];
+    self.imageView.image = self.collage.previewImage;
+}
+
 
 #pragma mark - UIImagePickerControllerDelegate methods
 

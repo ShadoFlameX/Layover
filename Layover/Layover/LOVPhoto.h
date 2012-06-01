@@ -13,6 +13,7 @@
 
 @property (nonatomic,strong) UIImage *image;
 @property (nonatomic,strong,readonly) UIImage *previewImage;
+@property (nonatomic,assign) CGAffineTransform transform;
 @property (nonatomic,assign) CGBlendMode blendMode;
 @property (nonatomic,assign) CGFloat alpha;
 

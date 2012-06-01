@@ -25,6 +25,8 @@
 		0D8B0641157432A300F1F5FE /* LOVCollageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D8B063F157432A300F1F5FE /* LOVCollageViewController.xib */; };
 		0DC3E44A15773C240053D93D /* LOVCollage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DC3E44915773C240053D93D /* LOVCollage.m */; };
 		0DC3E44D15775B550053D93D /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DC3E44C15775B550053D93D /* AssetsLibrary.framework */; };
+		0DE1E7941578887900BC0000 /* photo3.png in Resources */ = {isa = PBXBuildFile; fileRef = 0DE1E7921578887900BC0000 /* photo3.png */; };
+		0DE1E7951578887900BC0000 /* photo4.png in Resources */ = {isa = PBXBuildFile; fileRef = 0DE1E7931578887900BC0000 /* photo4.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +60,8 @@
 		0DC3E44815773C240053D93D /* LOVCollage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOVCollage.h; sourceTree = "<group>"; };
 		0DC3E44915773C240053D93D /* LOVCollage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOVCollage.m; sourceTree = "<group>"; };
 		0DC3E44C15775B550053D93D /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		0DE1E7921578887900BC0000 /* photo3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = photo3.png; path = Images/photo3.png; sourceTree = "<group>"; };
+		0DE1E7931578887900BC0000 /* photo4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = photo4.png; path = Images/photo4.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +85,8 @@
 			children = (
 				0D3323A41574567D00E85560 /* photo1.png */,
 				0D3323A61574568200E85560 /* photo2.png */,
+				0DE1E7921578887900BC0000 /* photo3.png */,
+				0DE1E7931578887900BC0000 /* photo4.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -239,6 +245,8 @@
 				0D8B0641157432A300F1F5FE /* LOVCollageViewController.xib in Resources */,
 				0D3323A51574567D00E85560 /* photo1.png in Resources */,
 				0D3323A71574568200E85560 /* photo2.png in Resources */,
+				0DE1E7941578887900BC0000 /* photo3.png in Resources */,
+				0DE1E7951578887900BC0000 /* photo4.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

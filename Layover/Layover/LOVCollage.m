@@ -90,12 +90,25 @@
     CGColorSpaceRelease(colorSpace);
     
     [self.photos enumerateObjectsUsingBlock:^(LOVPhoto *photo, NSUInteger idx, BOOL *stop) {
+        
+//        CGContextSetRGBFillColor(context, 0.5f, 0.0f, 0.0f, 1.0f);
+//        CGContextFillRect(context, contextRect);
+        
         CGImageRef imageRef = photo.previewImage.CGImage;
         CGRect photoRect = CGRectMake(0, 0, CGImageGetWidth(photo.previewImage.CGImage), CGImageGetHeight(photo.previewImage.CGImage));
         CGContextSetAlpha(context, photo.alpha);
         
         CGContextSetBlendMode(context, photo.blendMode);
+        
+        CGContextSaveGState(context);
+        
+        CGContextTranslateCTM(context, contextRect.size.width/2, contextRect.size.height/2);
+        CGContextConcatCTM(context, photo.transform);
+        CGContextTranslateCTM(context, -contextRect.size.width/2, -contextRect.size.height/2);
+
         CGContextDrawImage(context, CGRectCenterRectInRect(photoRect, contextRect), imageRef);
+        
+        CGContextRestoreGState(context);
     }];
     
     CGImageRef newImageRef = CGBitmapContextCreateImage(context);
