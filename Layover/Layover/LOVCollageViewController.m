@@ -10,6 +10,7 @@
 #import "LOVCollageViewController.h"
 #import "LOVPhoto.h"
 #import "LOVCollage.h"
+#import "LOVGridView.h"
 #import "NSFileManager+LayoverExtensions.h"
 
 enum  {
@@ -28,11 +29,14 @@ static const CGFloat PanGesturePadding = 24.0f;
     CGAffineTransform initialTransform;
 }
 
+@property (nonatomic,strong) LOVPhoto *selectedPhoto;
 @property (nonatomic,strong) LOVCollage *collage;
 @property (nonatomic,strong) ALAssetsLibrary *assetsLibrary;
+@property (nonatomic,strong) IBOutlet LOVGridView *gridView;
 @property (nonatomic,strong) IBOutlet UIImageView *imageView;
 @property (nonatomic,strong,readonly) UIImagePickerController *imagePicker;
 @property (nonatomic,strong) UIActivityIndicatorView *loadingView;
+@property (nonatomic,strong) UITapGestureRecognizer *selectPhotoGesture;
 @property (nonatomic,strong) UIPanGestureRecognizer *alphaGesture;
 @property (nonatomic,strong) UIRotationGestureRecognizer *rotationGesture;
 
@@ -44,11 +48,14 @@ static const CGFloat PanGesturePadding = 24.0f;
 
 #pragma mark - Properties
 
+@synthesize selectedPhoto = m_selectedPhoto;
 @synthesize collage = m_collage;
 @synthesize assetsLibrary = m_assetsLibrary;
+@synthesize gridView = m_gridView;
 @synthesize imageView = m_imageView;
 @synthesize imagePicker = m_imagePicker;
 @synthesize loadingView = m_loadingView;
+@synthesize selectPhotoGesture = m_selectPhotoGesture;
 @synthesize alphaGesture = m_panGesture;
 @synthesize rotationGesture = m_rotationGesture;
 
@@ -86,19 +93,24 @@ static const CGFloat PanGesturePadding = 24.0f;
     
     self.collage = [[LOVCollage alloc] init];
     
+    self.gridView.hidden = YES;
+    
     self.loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     self.loadingView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
     self.loadingView.center = CGPointMake(self.view.bounds.size.width/2.0f, self.view.bounds.size.height/2.0f);
     self.loadingView.frame = CGRectIntegral(self.loadingView.frame);
     self.loadingView.hidesWhenStopped = YES;
+
+    self.selectPhotoGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectNextPhoto:)];
+    [self.imageView addGestureRecognizer:self.selectPhotoGesture];
     
     self.alphaGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
-    [self.view addGestureRecognizer:self.alphaGesture];
+    [self.imageView addGestureRecognizer:self.alphaGesture];
     
     [self.view addSubview:self.loadingView];
     
-    [self addImage:[UIImage imageNamed:@"photo3.png"]];
-    [self addImage:[UIImage imageNamed:@"photo4.png"]];
+    [self addImage:[UIImage imageNamed:@"photo1.png"]];
+    [self addImage:[UIImage imageNamed:@"photo2.png"]];
 }
 
 - (void)viewDidUnload
@@ -151,13 +163,39 @@ static const CGFloat PanGesturePadding = 24.0f;
 
 - (IBAction)beginRotationMode:(id)sender
 {
-    self.view.gestureRecognizers = nil;
+    UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [doneButton addTarget:self action:@selector(endRotationMode:) forControlEvents:UIControlEventTouchUpInside];
+    [doneButton setTitle:@"Done" forState:UIControlStateNormal];
+    [doneButton sizeToFit];
+    doneButton.center = CGPointMake(self.view.bounds.size.width/2, self.view.bounds.size.height/2);
+    CGRect rect = doneButton.frame;
+    rect.origin.y = 20;
+    doneButton.frame = rect;
+    
+    [self.view addSubview:doneButton];
+     
+    self.imageView.gestureRecognizers = nil;
     
     if (!self.rotationGesture) {
         self.rotationGesture = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(handleRotation:)];
     }
     
-    [self.view addGestureRecognizer:self.rotationGesture];
+    [self.imageView addGestureRecognizer:self.rotationGesture];
+    [self.imageView addGestureRecognizer:self.selectPhotoGesture];
+    
+    [self.gridView setHidden:NO animated:YES];
+}
+
+- (void)endRotationMode:(id)sender
+{
+    UIButton *btn = sender;
+    [btn removeFromSuperview];
+    
+    self.imageView.gestureRecognizers = nil;
+    [self.imageView addGestureRecognizer:self.alphaGesture];
+    [self.imageView addGestureRecognizer:self.selectPhotoGesture];
+    
+    [self.gridView setHidden:YES animated:YES];
 }
 
 - (IBAction)showEffects:(id)sender
@@ -241,9 +279,29 @@ static const CGFloat PanGesturePadding = 24.0f;
     [self.collage previewImage:YES];
     
     dispatch_async(dispatch_get_main_queue(), ^() {
+        self.selectedPhoto = photo;
         self.imageView.image = self.collage.previewImage;
         [self.loadingView stopAnimating];
     });
+}
+
+- (void)selectNextPhoto:(UITapGestureRecognizer *)gestureRecognizer
+{
+    NSUInteger index = [self.collage.photos indexOfObject:self.selectedPhoto];
+    
+    switch (index) {
+        case 0:
+            index = self.collage.photos.count - 1;
+            break;
+        case NSNotFound:
+            index = self.collage.photos.count - 1;
+            break;
+        default:
+            --index;
+            break;
+    }
+    
+    self.selectedPhoto = [self.collage.photos objectAtIndex:index];
 }
 
 - (void)handlePan:(UIPanGestureRecognizer *)gestureRecognizer
@@ -257,8 +315,7 @@ static const CGFloat PanGesturePadding = 24.0f;
         newAlpha = MAX(0.0f, newAlpha);
         newAlpha = MIN(1.0f, newAlpha);
         
-        LOVPhoto *photo = [self.collage.photos objectAtIndex:1];
-        photo.alpha = newAlpha;
+        self.selectedPhoto.alpha = newAlpha;
         
         [self.collage previewImage:YES];
         self.imageView.image = self.collage.previewImage;
@@ -266,14 +323,12 @@ static const CGFloat PanGesturePadding = 24.0f;
 }
 
 - (void)handleRotation:(UIRotationGestureRecognizer *)gestureRecognizer
-{
-    LOVPhoto *photo = [self.collage.photos objectAtIndex:self.collage.photos.count - 1];
-    
+{    
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        initialTransform = photo.transform;
+        initialTransform = self.selectedPhoto.transform;
     }
     
-    photo.transform = CGAffineTransformRotate(initialTransform, -gestureRecognizer.rotation);
+    self.selectedPhoto.transform = CGAffineTransformRotate(initialTransform, -gestureRecognizer.rotation);
     
     [self.collage previewImage:YES];
     self.imageView.image = self.collage.previewImage;

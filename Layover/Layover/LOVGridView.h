@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface LOVGridView : UIView
-
+- (void)setHidden:(BOOL)hidden animated:(BOOL)animated;
 @end

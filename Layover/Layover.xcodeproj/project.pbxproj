@@ -11,6 +11,7 @@
 		0D3323A315744A3F00E85560 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D3323A215744A3F00E85560 /* CoreImage.framework */; };
 		0D3323A51574567D00E85560 /* photo1.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D3323A41574567D00E85560 /* photo1.png */; };
 		0D3323A71574568200E85560 /* photo2.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D3323A61574568200E85560 /* photo2.png */; };
+		0D33B60C15789F48003DAF0C /* LOVGridView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D33B60B15789F48003DAF0C /* LOVGridView.m */; };
 		0D6690441576299A00D7FA89 /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D66903F1576299A00D7FA89 /* UIImage+Alpha.m */; };
 		0D6690451576299A00D7FA89 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6690411576299A00D7FA89 /* UIImage+Resize.m */; };
 		0D6690461576299A00D7FA89 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6690431576299A00D7FA89 /* UIImage+RoundedCorner.m */; };
@@ -36,6 +37,8 @@
 		0D3323A215744A3F00E85560 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		0D3323A41574567D00E85560 /* photo1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = photo1.png; path = Images/photo1.png; sourceTree = "<group>"; };
 		0D3323A61574568200E85560 /* photo2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = photo2.png; path = Images/photo2.png; sourceTree = "<group>"; };
+		0D33B60A15789F48003DAF0C /* LOVGridView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOVGridView.h; sourceTree = "<group>"; };
+		0D33B60B15789F48003DAF0C /* LOVGridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOVGridView.m; sourceTree = "<group>"; };
 		0D66903E1576299A00D7FA89 /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
 		0D66903F1576299A00D7FA89 /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Alpha.m"; sourceTree = "<group>"; };
 		0D6690401576299A00D7FA89 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
@@ -186,6 +189,8 @@
 		0D8B0647157432B700F1F5FE /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				0D33B60A15789F48003DAF0C /* LOVGridView.h */,
+				0D33B60B15789F48003DAF0C /* LOVGridView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -266,6 +271,7 @@
 				0D6690451576299A00D7FA89 /* UIImage+Resize.m in Sources */,
 				0D6690461576299A00D7FA89 /* UIImage+RoundedCorner.m in Sources */,
 				0DC3E44A15773C240053D93D /* LOVCollage.m in Sources */,
+				0D33B60C15789F48003DAF0C /* LOVGridView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
