@@ -69,9 +69,9 @@
         return m_previewImage;
     }
     
-    LOVPhoto *firstPhoto = [self.photos objectAtIndex:0];
-    
-    CGSize size = CGSizeMake(CGImageGetWidth(firstPhoto.previewImage.CGImage), CGImageGetHeight(firstPhoto.previewImage.CGImage));
+    CGSize size = [UIScreen mainScreen].bounds.size;
+    size.width *= [UIScreen mainScreen].scale;
+    size.height *= [UIScreen mainScreen].scale;
     
     m_previewImage = [self outputImageForSize:size];
     
