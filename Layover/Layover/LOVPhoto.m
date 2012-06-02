@@ -79,4 +79,12 @@
     return photo;
 }
 
+#pragma mark - Logging
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"%@, image: %@, blendMode: %d, alpha: %f",[super description], self.image, self.blendMode, self.alpha]; 
+}
+
+
 @end
