@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "LOVEffectsPickerViewController.h"
 #import "LOVPhoto.h"
 #import "LOVCollage.h"
@@ -128,6 +129,8 @@
         CGRect rect = (idx % 2 == 0) ? leftRect : rightRect;
         
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:rect];
+        imageView.clipsToBounds = YES;
+        imageView.layer.cornerRadius = 8.0f;
         
         LOVCollage *previewCollage = [[LOVCollage alloc] init];
         for (LOVPhoto *photo in self.collage.photos) {
