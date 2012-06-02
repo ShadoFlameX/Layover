@@ -401,6 +401,9 @@ static const CGFloat PanGesturePadding = 24.0f;
     CGAffineTransform transform = CGAffineTransformRotate(initialTransform, -gestureRecognizer.rotation);
     
     CGRect boundingRect = CGRectApplyAffineTransform(imageRect, transform);
+    // account for any scaling that was applied previously
+    imageRect = CGRectApplyAffineTransform(imageRect, initialTransform);
+    
     CGFloat cropScale = MAX(boundingRect.size.width/imageRect.size.width, boundingRect.size.height/imageRect.size.width);
     
     transform = CGAffineTransformScale(transform, cropScale, cropScale);
