@@ -108,8 +108,6 @@
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (void)reloadContent
@@ -154,13 +152,11 @@
                 imageView.image = image;
                 
                 imageView.alpha = 0.0f;
-//                imageView.transform = CGAffineTransformMakeScale(0.95f, 0.95);
                 
                 [self.scrollView addSubview:imageView];
 
                 [UIView animateWithDuration:0.35f delay:0.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
                     imageView.alpha = 1.0f;
-//                    imageView.transform = CGAffineTransformIdentity;
                 } completion:nil];
             });
         });
