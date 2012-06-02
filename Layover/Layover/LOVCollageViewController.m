@@ -284,8 +284,13 @@ static const CGFloat PanGesturePadding = 24.0f;
     }
     
     LOVPhoto *photo = [LOVPhoto photoWithImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:fileURL]]];
+    
+    if (self.collage.photos.count > 0) {
+        photo.blendMode = kCGBlendModeScreen;
+        photo.alpha = 0.5f;
+    }
+    
     [self.collage addPhoto:photo];
-    [self.collage previewImage];
     
     dispatch_async(dispatch_get_main_queue(), ^() {
         self.selectedPhoto = photo;

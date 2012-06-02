@@ -118,11 +118,6 @@
 
 - (void)addPhoto:(LOVPhoto *)photo
 {
-    if (self.mutablePhotos.count > 0) {
-        photo.blendMode = kCGBlendModeScreen;
-        photo.alpha = 0.5f;
-    }
-    
     if (self.mutablePhotos.count == 2) {
         [self.mutablePhotos removeObjectAtIndex:0];
     }
