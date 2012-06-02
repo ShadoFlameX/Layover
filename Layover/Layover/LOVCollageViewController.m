@@ -294,7 +294,7 @@ static const CGFloat PanGesturePadding = 24.0f;
         self.imageView.transform = CGAffineTransformMakeScale(1.15f, 1.15f);
         
         if (self.imageView.alpha != 1.0f) {
-            [UIView animateWithDuration:0.35f animations:^{
+            [UIView animateWithDuration:0.5f animations:^{
                 self.imageView.alpha = 1.0f;
                 self.imageView.transform = CGAffineTransformIdentity;
             }];
@@ -477,7 +477,7 @@ static const CGFloat PanGesturePadding = 24.0f;
     
     } else if (actionSheet.tag == LOVCollageViewControllerActionSheetClearPhotos) {
         if (buttonIndex == 0) {
-            [UIView animateWithDuration:0.35f animations:^{
+            [UIView animateWithDuration:0.5f animations:^{
                 self.imageView.alpha = 0.0f;
                 self.imageView.transform = CGAffineTransformMakeScale(1.15f, 1.15f);
             
