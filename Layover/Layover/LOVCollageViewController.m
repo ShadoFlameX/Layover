@@ -396,7 +396,16 @@ static const CGFloat PanGesturePadding = 24.0f;
         initialTransform = self.selectedPhoto.transform;
     }
     
-    self.selectedPhoto.transform = CGAffineTransformRotate(initialTransform, -gestureRecognizer.rotation);
+    CGRect imageRect = CGRectMake(0, 0, self.imageView.image.size.width, self.imageView.image.size.height);
+    
+    CGAffineTransform transform = CGAffineTransformRotate(initialTransform, -gestureRecognizer.rotation);
+    
+    CGRect boundingRect = CGRectApplyAffineTransform(imageRect, transform);
+    CGFloat cropScale = MAX(boundingRect.size.width/imageRect.size.width, boundingRect.size.height/imageRect.size.width);
+    
+    transform = CGAffineTransformScale(transform, cropScale, cropScale);
+    
+    self.selectedPhoto.transform = transform;
     
     [self.collage previewImage];
     self.imageView.image = self.collage.previewImage;
