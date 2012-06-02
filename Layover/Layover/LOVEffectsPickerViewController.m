@@ -10,7 +10,9 @@
 #import "LOVPhoto.h"
 #import "LOVCollage.h"
 
-@interface LOVEffectsPickerViewController ()
+@interface LOVEffectsPickerViewController () {
+    dispatch_queue_t backgroundQueue;
+}
 
 @property (nonatomic,strong) IBOutlet UIScrollView *scrollView;
 @property (nonatomic,strong) NSArray *effects;
@@ -51,8 +53,15 @@
     return self;
 }
 
+- (void)dealloc
+{
+    dispatch_release(backgroundQueue);
+}
+
 - (void)setup
 {
+    backgroundQueue = dispatch_queue_create("com.skeuo.LOVEffectsPickerViewController.backgroundqueue", DISPATCH_QUEUE_SERIAL);        
+
     self.effects = [NSArray arrayWithObjects:
         [NSNumber numberWithInt:kCGBlendModeNormal],
         [NSNumber numberWithInt:kCGBlendModeMultiply],
@@ -115,19 +124,25 @@
     rightRect.origin.x += 6.0f;
     rightRect.size.width -= 6.0f;
     
-    __block LOVCollage *previewCollage = [[LOVCollage alloc] init];
-    for (LOVPhoto *photo in self.collage.photos) {
-        [previewCollage addPhoto:photo];
-    }
-    
     [self.effects enumerateObjectsUsingBlock:^(NSNumber *blendNum, NSUInteger idx, BOOL *stop) {
         CGRect rect = (idx % 2 == 0) ? leftRect : rightRect;
         
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:rect];
         
+        LOVCollage *previewCollage = [[LOVCollage alloc] init];
+        for (LOVPhoto *photo in self.collage.photos) {
+            [previewCollage addPhoto:[photo copy]];
+        }
+        
         LOVPhoto *topPhoto = [previewCollage.photos objectAtIndex:previewCollage.photos.count - 1];
         topPhoto.blendMode = [blendNum intValue];
-        imageView.image = [previewCollage outputImageForSize:rect.size];
+        
+        dispatch_async(backgroundQueue, ^() {
+            UIImage *image = [previewCollage outputImageForSize:rect.size];
+            dispatch_async(dispatch_get_main_queue(), ^() {
+                imageView.image = image;
+            });
+        });
         
         [self.scrollView addSubview:imageView];
         [self.imageViews addObject:imageView];

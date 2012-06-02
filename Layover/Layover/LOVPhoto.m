@@ -9,6 +9,12 @@
 #import "LOVPhoto.h"
 #import "UIImage+Resize.h"
 
+@interface LOVPhoto ()
+
+@property (nonatomic,strong,readwrite) UIImage *previewImage;
+
+@end
+
 @implementation LOVPhoto
 
 #pragma mark - Properties
@@ -56,6 +62,19 @@
     photo.blendMode = blendMode;
     photo.alpha = alpha;
     photo.transform = CGAffineTransformIdentity;
+    
+    return photo;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    LOVPhoto *photo = [[LOVPhoto alloc] init];
+    
+    photo.image = self.image;
+    photo.previewImage = self.previewImage;
+    photo.blendMode = self.blendMode;
+    photo.alpha = self.alpha;
+    photo.transform = self.transform;
     
     return photo;
 }

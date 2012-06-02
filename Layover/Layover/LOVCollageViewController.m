@@ -76,7 +76,7 @@ static const CGFloat PanGesturePadding = 24.0f;
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        backgroundQueue = dispatch_queue_create("com.skeuo.backgroundqueue", DISPATCH_QUEUE_SERIAL);        
+        backgroundQueue = dispatch_queue_create("com.skeuo.LOVCollageViewController.backgroundqueue", DISPATCH_QUEUE_SERIAL);        
     }
     return self;
 }
