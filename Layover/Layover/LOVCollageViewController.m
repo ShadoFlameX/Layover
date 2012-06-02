@@ -247,12 +247,12 @@ static const CGFloat PanGesturePadding = 24.0f;
         
     } completion:^(BOOL finished) {
         self.toolbar.userInteractionEnabled = YES;
-        [self presentViewController:navCon animated:YES completion:^{
-            self.imageView.hidden = NO;
-            [tempImageView performSelector:@selector(removeFromSuperview) withObject:nil afterDelay:0.6];
-        }];
     }];
     
+    [self presentViewController:navCon animated:YES completion:^{
+        self.imageView.hidden = NO;
+        [tempImageView performSelector:@selector(removeFromSuperview) withObject:nil afterDelay:0.75];
+    }];
 }
 
 - (void)useLastPhotoTaken
