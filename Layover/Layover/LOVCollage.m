@@ -80,7 +80,7 @@
 
 - (UIImage *)outputImageForSize:(CGSize)size
 {
-    CGRect contextRect = CGRectWithSize(size);
+    CGRect contextRect = CGRectMake(0, 0, MIN(size.width, size.height), MIN(size.width, size.height));
     
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     NSUInteger bytesPerPixel = 4;
@@ -89,13 +89,20 @@
     CGContextRef context = CGBitmapContextCreate(NULL, contextRect.size.width, contextRect.size.height, bitsPerComponent, bytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
     CGColorSpaceRelease(colorSpace);
     
+    __block CGFloat scale = 1.0f;
+    
     [self.photos enumerateObjectsUsingBlock:^(LOVPhoto *photo, NSUInteger idx, BOOL *stop) {
         
 //        CGContextSetRGBFillColor(context, 0.5f, 0.0f, 0.0f, 1.0f);
 //        CGContextFillRect(context, contextRect);
         
+        if (idx == 0) {
+            CGFloat minDimension = MIN(CGImageGetWidth(photo.previewImage.CGImage), CGImageGetHeight(photo.previewImage.CGImage));
+            scale = contextRect.size.width * [UIScreen mainScreen].scale / minDimension;
+        }
+        
         CGImageRef imageRef = photo.previewImage.CGImage;
-        CGRect photoRect = CGRectMake(0, 0, CGImageGetWidth(photo.previewImage.CGImage), CGImageGetHeight(photo.previewImage.CGImage));
+        CGRect photoRect = CGRectMake(0, 0, CGImageGetWidth(photo.previewImage.CGImage) * scale, CGImageGetHeight(photo.previewImage.CGImage) * scale);
         CGContextSetAlpha(context, photo.alpha);
         
         CGContextSetBlendMode(context, photo.blendMode);
