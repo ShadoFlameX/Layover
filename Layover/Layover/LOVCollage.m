@@ -13,6 +13,7 @@
 @interface LOVCollage ()
 
 @property (nonatomic,strong) NSMutableArray *mutablePhotos;
+@property (nonatomic,strong,readwrite) UIImage *previewImage;
 
 @end
 
@@ -32,8 +33,10 @@
 {
     if (self.photos.count == 0)
         return nil;
-
-    m_previewImage = [self outputImageForSize:[UIScreen mainScreen].bounds.size];
+    
+    if (!m_previewImage) {
+        m_previewImage = [self outputImageForSize:[UIScreen mainScreen].bounds.size];
+    }
     
     return m_previewImage;
 }
@@ -59,6 +62,12 @@
         self.mutablePhotos = [NSMutableArray array];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    // this will de-register all observers
+    [self removeAllPhotos];
 }
 
 #pragma mark - Image Processing
@@ -118,16 +127,41 @@
 
 - (void)addPhoto:(LOVPhoto *)photo
 {
+    self.previewImage = nil;
+    
     if (self.mutablePhotos.count == 2) {
         [self.mutablePhotos removeObjectAtIndex:0];
     }
     
-    [self.mutablePhotos addObject:photo];    
+    [self.mutablePhotos addObject:photo];
+    
+    [photo addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:NULL];
+    [photo addObserver:self forKeyPath:@"transform" options:NSKeyValueObservingOptionNew context:NULL];
+    [photo addObserver:self forKeyPath:@"blendMode" options:NSKeyValueObservingOptionNew context:NULL];
+    [photo addObserver:self forKeyPath:@"alpha" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void)removeAllPhotos
 {
+    self.previewImage = nil;
+    
+    [self.mutablePhotos enumerateObjectsUsingBlock:^(LOVPhoto *photo, NSUInteger idx, BOOL *stop) {
+        [photo removeObserver:self forKeyPath:@"image"];
+        [photo removeObserver:self forKeyPath:@"transform"];
+        [photo removeObserver:self forKeyPath:@"blendMode"];
+        [photo removeObserver:self forKeyPath:@"alpha"];
+    }];
+    
     [self.mutablePhotos removeAllObjects];
+}
+
+#pragma mark - Key Value Observing
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([object isKindOfClass:[LOVPhoto class]]) {
+        self.previewImage = nil;
+    }
 }
 
 @end
