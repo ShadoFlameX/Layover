@@ -62,6 +62,10 @@
 
 - (void)setup
 {
+    self.title = NSLocalizedString(@"Choose Effect", @"view title");
+    
+    self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    
     backgroundQueue = dispatch_queue_create("com.skeuo.LOVEffectsPickerViewController.backgroundqueue", DISPATCH_QUEUE_SERIAL);
     
     self.effects = [NSArray arrayWithObjects:
@@ -150,12 +154,14 @@
                 imageView.image = image;
                 
                 imageView.alpha = 0.0f;
+//                imageView.transform = CGAffineTransformMakeScale(0.95f, 0.95);
                 
                 [self.scrollView addSubview:imageView];
 
-                [UIView animateWithDuration:0.25f animations:^{
+                [UIView animateWithDuration:0.35f delay:0.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
                     imageView.alpha = 1.0f;
-                }];
+//                    imageView.transform = CGAffineTransformIdentity;
+                } completion:nil];
             });
         });
         
@@ -173,6 +179,11 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (CGRect)rectForViewWithEffect:(CGBlendMode)blendMode
+{
+    return CGRectMake(10, 10 + 20 + 44 + 144 + 12 + 0.5, 144, 144);
 }
 
 #pragma mark - Actions

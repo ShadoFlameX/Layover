@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "LOVCollageViewController.h"
 #import "LOVPhoto.h"
@@ -35,6 +36,7 @@ static const CGFloat PanGesturePadding = 24.0f;
 @property (nonatomic,strong) ALAssetsLibrary *assetsLibrary;
 @property (nonatomic,strong) IBOutlet LOVGridView *gridView;
 @property (nonatomic,strong) IBOutlet UIImageView *imageView;
+@property (nonatomic,strong) IBOutlet UIToolbar *toolbar;
 @property (nonatomic,strong,readonly) UIImagePickerController *imagePicker;
 @property (nonatomic,strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic,strong) UITapGestureRecognizer *selectPhotoGesture;
@@ -54,6 +56,7 @@ static const CGFloat PanGesturePadding = 24.0f;
 @synthesize assetsLibrary = m_assetsLibrary;
 @synthesize gridView = m_gridView;
 @synthesize imageView = m_imageView;
+@synthesize toolbar = m_toolbar;
 @synthesize imagePicker = m_imagePicker;
 @synthesize loadingView = m_loadingView;
 @synthesize selectPhotoGesture = m_selectPhotoGesture;
@@ -93,6 +96,9 @@ static const CGFloat PanGesturePadding = 24.0f;
     [super viewDidLoad];
     
     self.collage = [[LOVCollage alloc] init];
+    
+    self.imageView.transform = CGAffineTransformIdentity;
+    self.imageView.alpha = 0.0f;
         
     self.gridView.hidden = YES;
     
@@ -204,6 +210,8 @@ static const CGFloat PanGesturePadding = 24.0f;
     if (self.collage.photos.count < 2)
         return;
     
+    self.toolbar.userInteractionEnabled = NO;
+    
     LOVEffectsPickerViewController *effectsPicker = [[LOVEffectsPickerViewController alloc] initWithNibName:@"LOVEffectsPickerViewController" bundle:nil];
     effectsPicker.collage = self.collage;
     
@@ -224,7 +232,27 @@ static const CGFloat PanGesturePadding = 24.0f;
     UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:effectsPicker];
     navCon.navigationBar.barStyle = UIBarStyleBlack;
     
-    [self presentViewController:navCon animated:YES completion:nil];
+    UIImageView *tempImageView = [[UIImageView alloc] initWithImage:self.imageView.image];
+    tempImageView.frame = [self.view convertRect:self.imageView.frame toView:[UIApplication sharedApplication].keyWindow];
+    tempImageView.contentMode = self.imageView.contentMode;
+    tempImageView.clipsToBounds = self.imageView.clipsToBounds;
+    
+    [[UIApplication sharedApplication].keyWindow addSubview:tempImageView];
+
+    self.imageView.hidden = YES;
+    
+    [UIView animateWithDuration:0.5f animations:^{
+        tempImageView.frame = [effectsPicker rectForViewWithEffect:((LOVPhoto *)[self.collage.photos objectAtIndex:self.collage.photos.count - 1]).blendMode];
+        tempImageView.layer.cornerRadius = 8.0f;
+        
+    } completion:^(BOOL finished) {
+        self.toolbar.userInteractionEnabled = YES;
+        [self presentViewController:navCon animated:YES completion:^{
+            self.imageView.hidden = NO;
+            [tempImageView performSelector:@selector(removeFromSuperview) withObject:nil afterDelay:0.6];
+        }];
+    }];
+    
 }
 
 - (void)useLastPhotoTaken
@@ -306,9 +334,9 @@ static const CGFloat PanGesturePadding = 24.0f;
         self.imageView.image = self.collage.previewImage;
         [self.loadingView stopAnimating];
         
-        self.imageView.transform = CGAffineTransformMakeScale(1.15f, 1.15f);
-        
         if (self.imageView.alpha != 1.0f) {
+            self.imageView.transform = CGAffineTransformMakeScale(1.15f, 1.15f);
+        
             [UIView animateWithDuration:0.5f animations:^{
                 self.imageView.alpha = 1.0f;
                 self.imageView.transform = CGAffineTransformIdentity;

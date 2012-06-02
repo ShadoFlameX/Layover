@@ -17,4 +17,6 @@ typedef void (^LOVEffectsPickerSaveBlock)(CGBlendMode);
 @property (nonatomic,strong) LOVCollage *collage;
 @property (nonatomic,copy) LOVEffectsPickerSaveBlock saveBlock;
 
+- (CGRect)rectForViewWithEffect:(CGBlendMode)blendMode;
+
 @end
