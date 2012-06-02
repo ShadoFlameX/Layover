@@ -336,6 +336,14 @@ static const CGFloat PanGesturePadding = 24.0f;
     self.selectedPhoto = [self.collage.photos objectAtIndex:index];
 }
 
+- (void)clearPhotos:(id)sender
+{
+    UIActionSheet *clearPhotosActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to clear all photos?",@"action sheet title") delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"") destructiveButtonTitle:NSLocalizedString(@"Clear Photos", @"") otherButtonTitles:nil];
+    clearPhotosActionSheet.tag = LOVCollageViewControllerActionSheetClearPhotos;
+    
+    [clearPhotosActionSheet showInView:self.view];
+}
+
 - (void)handlePan:(UIPanGestureRecognizer *)gestureRecognizer
 {
     if (self.collage.photos.count > 1) {
@@ -401,10 +409,7 @@ static const CGFloat PanGesturePadding = 24.0f;
             [self useLastPhotoTaken];
             
         } else if (buttonIndex == 3) {
-            UIActionSheet *clearPhotosActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to clear all photos?",@"action sheet title") delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"") destructiveButtonTitle:NSLocalizedString(@"Clear Photos", @"") otherButtonTitles:nil];
-            clearPhotosActionSheet.tag = LOVCollageViewControllerActionSheetClearPhotos;
-            
-            [clearPhotosActionSheet showInView:self.view];
+            [self clearPhotos:nil];
         }
     
     } else if (actionSheet.tag == LOVCollageViewControllerActionSheetClearPhotos) {
