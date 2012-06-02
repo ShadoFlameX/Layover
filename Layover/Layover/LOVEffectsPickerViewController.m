@@ -29,6 +29,7 @@
 #pragma mark - Properties
 
 @synthesize collage = m_collage;
+@synthesize saveBlock = m_saveBlock;
 @synthesize scrollView = m_scrollView;
 @synthesize effects = m_effects;
 @synthesize imageViews = m_imageViews;
@@ -61,8 +62,8 @@
 
 - (void)setup
 {
-    backgroundQueue = dispatch_queue_create("com.skeuo.LOVEffectsPickerViewController.backgroundqueue", DISPATCH_QUEUE_SERIAL);        
-
+    backgroundQueue = dispatch_queue_create("com.skeuo.LOVEffectsPickerViewController.backgroundqueue", DISPATCH_QUEUE_SERIAL);
+    
     self.effects = [NSArray arrayWithObjects:
         [NSNumber numberWithInt:kCGBlendModeNormal],
         [NSNumber numberWithInt:kCGBlendModeMultiply],
@@ -90,6 +91,9 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor darkGrayColor];
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    [self.view addGestureRecognizer:tapGesture];
     
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(close:)];
     self.navigationItem.leftBarButtonItem = cancelButton;
@@ -176,6 +180,17 @@
 - (void)close:(id)sender
 {
     [self dismissModalViewControllerAnimated:YES];
+}
+
+- (void)handleTap:(UITapGestureRecognizer *)gestureRecognizer
+{
+    [self.imageViews enumerateObjectsUsingBlock:^(UIImageView *imageView, NSUInteger idx, BOOL *stop) {
+        if (CGRectContainsPoint(imageView.bounds, [gestureRecognizer locationInView:imageView])) {
+            self.saveBlock([[self.effects objectAtIndex:idx] intValue]);
+            *stop = YES;
+            [self close:nil];
+        }
+    }];
 }
 
 @end

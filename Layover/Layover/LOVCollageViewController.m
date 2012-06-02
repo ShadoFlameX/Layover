@@ -207,6 +207,20 @@ static const CGFloat PanGesturePadding = 24.0f;
     LOVEffectsPickerViewController *effectsPicker = [[LOVEffectsPickerViewController alloc] initWithNibName:@"LOVEffectsPickerViewController" bundle:nil];
     effectsPicker.collage = self.collage;
     
+    void (^saveBlock)(CGBlendMode) = ^(CGBlendMode blendMode) {
+        self.selectedPhoto.blendMode = blendMode;
+        
+        [self.loadingView startAnimating];
+        dispatch_async(backgroundQueue, ^() {
+            [self.collage previewImage];
+            dispatch_async(dispatch_get_main_queue(), ^() {
+                self.imageView.image = self.collage.previewImage;
+                [self.loadingView stopAnimating];
+            });
+        });
+    };
+    effectsPicker.saveBlock = saveBlock;
+    
     UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:effectsPicker];
     navCon.navigationBar.barStyle = UIBarStyleBlack;
     

@@ -10,8 +10,11 @@
 
 @class LOVCollage;
 
+typedef void (^LOVEffectsPickerSaveBlock)(CGBlendMode);
+
 @interface LOVEffectsPickerViewController : UIViewController
 
 @property (nonatomic,strong) LOVCollage *collage;
+@property (nonatomic,copy) LOVEffectsPickerSaveBlock saveBlock;
 
 @end
