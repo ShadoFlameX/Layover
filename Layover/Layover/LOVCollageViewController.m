@@ -211,11 +211,6 @@ static const CGFloat PanGesturePadding = 24.0f;
     navCon.navigationBar.barStyle = UIBarStyleBlack;
     
     [self presentViewController:navCon animated:YES completion:nil];
-    
-//    UIActionSheet *effectsSheet = [[UIActionSheet alloc] initWithTitle:@"Effects" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Normal", @"Multiply", @"Darken", @"Screen", @"Overlay", @"Darken", @"Lighten", @"Color Dodge", @"Color Burn", @"Soft Light", @"Hard Light", @"Difference", @"Exclusion", @"Hue", @"Saturation", @"Color", @"Luminosity", nil];
-//    effectsSheet.tag = LOVCollageViewControllerActionSheetEffects;
-//    
-//    [effectsSheet showInView:self.view];
 }
 
 - (void)useLastPhotoTaken
@@ -357,7 +352,6 @@ static const CGFloat PanGesturePadding = 24.0f;
     self.imageView.image = self.collage.previewImage;
 }
 
-
 #pragma mark - UIImagePickerControllerDelegate methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
@@ -398,88 +392,6 @@ static const CGFloat PanGesturePadding = 24.0f;
             
             [clearPhotosActionSheet showInView:self.view];
         }
-    
-    } else if (actionSheet.tag == LOVCollageViewControllerActionSheetEffects) {
-        CGBlendMode blendMode = kCGBlendModeNormal;
-        
-        switch (buttonIndex) {
-            case 1:
-                blendMode = kCGBlendModeMultiply;
-                break;
-                
-            case 2:
-                blendMode = kCGBlendModeDarken;
-                break;
-                
-            case 3:
-                blendMode = kCGBlendModeScreen;
-                break;
-                
-            case 4:
-                blendMode = kCGBlendModeOverlay;
-                break;
-                
-            case 5:
-                blendMode = kCGBlendModeDarken;
-                break;
-                
-            case 6:
-                blendMode = kCGBlendModeLighten;
-                break;
-                
-            case 7:
-                blendMode = kCGBlendModeColorDodge;
-                break;
-                
-            case 8:
-                blendMode = kCGBlendModeColorBurn;
-                break;
-                
-            case 9:
-                blendMode = kCGBlendModeSoftLight;
-                break;
-                
-            case 10:
-                blendMode = kCGBlendModeHardLight;
-                break;
-                
-            case 11:
-                blendMode = kCGBlendModeDifference;
-                break;
-                
-            case 12:
-                blendMode = kCGBlendModeExclusion;
-                break;
-                
-            case 13:
-                blendMode = kCGBlendModeHue;
-                break;
-                
-            case 14:
-                blendMode = kCGBlendModeSaturation;
-                break;
-                
-            case 15:
-                blendMode = kCGBlendModeColor;
-                break;
-                
-            case 16:
-                blendMode = kCGBlendModeLuminosity;
-                break;
-                
-            default:
-                break;
-        }
-        
-        LOVPhoto *photo = [self.collage.photos objectAtIndex:1];
-        photo.blendMode = blendMode;
-        
-        dispatch_async(backgroundQueue, ^() {
-            [self.collage previewImage];
-            dispatch_async(dispatch_get_main_queue(), ^() {
-                self.imageView.image = self.collage.previewImage;
-            });
-        });
     
     } else if (actionSheet.tag == LOVCollageViewControllerActionSheetClearPhotos) {
         if (buttonIndex == 0) {
