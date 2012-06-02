@@ -7,6 +7,8 @@
 //
 
 #import "LOVEffectsPickerViewController.h"
+#import "LOVPhoto.h"
+#import "LOVCollage.h"
 
 @interface LOVEffectsPickerViewController ()
 
@@ -23,6 +25,7 @@
 
 #pragma mark - Properties
 
+@synthesize collage = m_collage;
 @synthesize scrollView = m_scrollView;
 @synthesize effects = m_effects;
 @synthesize imageViews = m_imageViews;
@@ -50,7 +53,25 @@
 
 - (void)setup
 {
-    self.effects = [NSArray arrayWithObjects:@"Normal", @"Multiply", @"Darken", @"Screen", @"Overlay", @"Darken", @"Lighten", @"Color Dodge", @"Color Burn", @"Soft Light", @"Hard Light", @"Difference", @"Exclusion", @"Hue", @"Saturation", @"Color", @"Luminosity", nil];
+    self.effects = [NSArray arrayWithObjects:
+        [NSNumber numberWithInt:kCGBlendModeNormal],
+        [NSNumber numberWithInt:kCGBlendModeMultiply],
+        [NSNumber numberWithInt:kCGBlendModeScreen],
+        [NSNumber numberWithInt:kCGBlendModeOverlay],
+        [NSNumber numberWithInt:kCGBlendModeDarken],
+        [NSNumber numberWithInt:kCGBlendModeLighten],
+        [NSNumber numberWithInt:kCGBlendModeColorDodge],
+        [NSNumber numberWithInt:kCGBlendModeColorBurn],
+        [NSNumber numberWithInt:kCGBlendModeSoftLight],
+        [NSNumber numberWithInt:kCGBlendModeHardLight],
+        [NSNumber numberWithInt:kCGBlendModeDifference],
+        [NSNumber numberWithInt:kCGBlendModeExclusion],
+        [NSNumber numberWithInt:kCGBlendModeHue],
+        [NSNumber numberWithInt:kCGBlendModeSaturation],
+        [NSNumber numberWithInt:kCGBlendModeColor],
+        [NSNumber numberWithInt:kCGBlendModeLuminosity],
+        nil];
+    
     self.imageViews = [NSMutableArray array];
 }
 
@@ -80,6 +101,9 @@
     }];
     [self.imageViews removeAllObjects];
     
+    if (!self.collage.photos.count)
+        return;
+    
     CGRect containerRect;
     __block CGRect leftRect, rightRect;
     
@@ -91,11 +115,20 @@
     rightRect.origin.x += 6.0f;
     rightRect.size.width -= 6.0f;
     
-    [self.effects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    __block LOVCollage *previewCollage = [[LOVCollage alloc] init];
+    for (LOVPhoto *photo in self.collage.photos) {
+        [previewCollage addPhoto:photo];
+    }
+    
+    [self.effects enumerateObjectsUsingBlock:^(NSNumber *blendNum, NSUInteger idx, BOOL *stop) {
         CGRect rect = (idx % 2 == 0) ? leftRect : rightRect;
         
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:rect];
-        imageView.backgroundColor = [UIColor colorWithWhite:arc4random()%75 / 100.0f + 0.25f alpha:1.0f];
+        
+        LOVPhoto *topPhoto = [previewCollage.photos objectAtIndex:previewCollage.photos.count - 1];
+        topPhoto.blendMode = [blendNum intValue];
+        imageView.image = [previewCollage outputImageForSize:rect.size];
+        
         [self.scrollView addSubview:imageView];
         [self.imageViews addObject:imageView];
         

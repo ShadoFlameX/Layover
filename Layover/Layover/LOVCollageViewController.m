@@ -205,6 +205,7 @@ static const CGFloat PanGesturePadding = 24.0f;
         return;
     
     LOVEffectsPickerViewController *effectsPicker = [[LOVEffectsPickerViewController alloc] initWithNibName:@"LOVEffectsPickerViewController" bundle:nil];
+    effectsPicker.collage = self.collage;
     
     UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:effectsPicker];
     navCon.navigationBar.barStyle = UIBarStyleBlack;
@@ -284,7 +285,7 @@ static const CGFloat PanGesturePadding = 24.0f;
     
     LOVPhoto *photo = [LOVPhoto photoWithImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:fileURL]]];
     [self.collage addPhoto:photo];
-    [self.collage previewImage:YES];
+    [self.collage previewImage];
     
     dispatch_async(dispatch_get_main_queue(), ^() {
         self.selectedPhoto = photo;
@@ -334,7 +335,7 @@ static const CGFloat PanGesturePadding = 24.0f;
         
         self.selectedPhoto.alpha = newAlpha;
         
-        [self.collage previewImage:YES];
+        [self.collage previewImage];
         self.imageView.image = self.collage.previewImage;
     }
 }
@@ -347,7 +348,7 @@ static const CGFloat PanGesturePadding = 24.0f;
     
     self.selectedPhoto.transform = CGAffineTransformRotate(initialTransform, -gestureRecognizer.rotation);
     
-    [self.collage previewImage:YES];
+    [self.collage previewImage];
     self.imageView.image = self.collage.previewImage;
 }
 
@@ -469,7 +470,7 @@ static const CGFloat PanGesturePadding = 24.0f;
         photo.blendMode = blendMode;
         
         dispatch_async(backgroundQueue, ^() {
-            [self.collage previewImage:YES];
+            [self.collage previewImage];
             dispatch_async(dispatch_get_main_queue(), ^() {
                 self.imageView.image = self.collage.previewImage;
             });

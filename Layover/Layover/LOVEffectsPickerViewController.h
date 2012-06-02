@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class LOVCollage;
+
 @interface LOVEffectsPickerViewController : UIViewController
+
+@property (nonatomic,strong) LOVCollage *collage;
 
 @end

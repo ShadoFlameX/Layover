@@ -13,7 +13,6 @@
 @interface LOVCollage ()
 
 @property (nonatomic,strong) NSMutableArray *mutablePhotos;
-@property (nonatomic,strong,readwrite) UIImage *previewImage;
 
 @end
 
@@ -31,10 +30,15 @@
 
 - (UIImage *)previewImage
 {
-    return [self previewImage:NO];
+    if (self.photos.count == 0)
+        return nil;
+
+    m_previewImage = [self outputImageForSize:[UIScreen mainScreen].bounds.size];
+    
+    return m_previewImage;
 }
 
-- (UIImage *)outputImage
+- (UIImage *)fullsizeImage
 {
     if (self.photos.count == 0)
         return nil;
@@ -59,29 +63,12 @@
 
 #pragma mark - Image Processing
 
-- (UIImage *)previewImage:(BOOL)forceUpdate
-{
-    if (self.photos.count == 0)
-        return nil;
-    
-    if (!forceUpdate && m_previewImage)
-    {
-        return m_previewImage;
-    }
-    
-    CGSize size = [UIScreen mainScreen].bounds.size;
-    size.width *= [UIScreen mainScreen].scale;
-    size.height *= [UIScreen mainScreen].scale;
-    
-    m_previewImage = [self outputImageForSize:size];
-    
-    return m_previewImage;
-}
-
 - (UIImage *)outputImageForSize:(CGSize)size
 {
     CGRect contextRect = CGRectMake(0, 0, MIN(size.width, size.height), MIN(size.width, size.height));
-    
+    contextRect.size.width *= [UIScreen mainScreen].scale;
+    contextRect.size.height *= [UIScreen mainScreen].scale;
+
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     NSUInteger bytesPerPixel = 4;
     NSUInteger bytesPerRow = bytesPerPixel * contextRect.size.width;
@@ -89,7 +76,7 @@
     CGContextRef context = CGBitmapContextCreate(NULL, contextRect.size.width, contextRect.size.height, bitsPerComponent, bytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
     CGColorSpaceRelease(colorSpace);
     
-    __block CGFloat scale = 1.0f;
+    __block CGFloat photoScale = 1.0f;
     
     [self.photos enumerateObjectsUsingBlock:^(LOVPhoto *photo, NSUInteger idx, BOOL *stop) {
         
@@ -98,11 +85,11 @@
         
         if (idx == 0) {
             CGFloat minDimension = MIN(CGImageGetWidth(photo.previewImage.CGImage), CGImageGetHeight(photo.previewImage.CGImage));
-            scale = contextRect.size.width * [UIScreen mainScreen].scale / minDimension;
+            photoScale = contextRect.size.width / minDimension;
         }
         
         CGImageRef imageRef = photo.previewImage.CGImage;
-        CGRect photoRect = CGRectMake(0, 0, CGImageGetWidth(photo.previewImage.CGImage) * scale, CGImageGetHeight(photo.previewImage.CGImage) * scale);
+        CGRect photoRect = CGRectMake(0, 0, CGImageGetWidth(photo.previewImage.CGImage) * photoScale, CGImageGetHeight(photo.previewImage.CGImage) * photoScale);
         CGContextSetAlpha(context, photo.alpha);
         
         CGContextSetBlendMode(context, photo.blendMode);
@@ -140,15 +127,12 @@
         [self.mutablePhotos removeObjectAtIndex:0];
     }
     
-    [self.mutablePhotos addObject:photo];
-    
-    self.previewImage = nil;
+    [self.mutablePhotos addObject:photo];    
 }
 
 - (void)removeAllPhotos
 {
     [self.mutablePhotos removeAllObjects];
-    self.previewImage = nil;
 }
 
 @end

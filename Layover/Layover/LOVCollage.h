@@ -14,11 +14,11 @@
 
 @property (nonatomic,readonly) NSArray *photos;
 @property (nonatomic,strong,readonly) UIImage *previewImage;
-@property (nonatomic,readonly) UIImage *outputImage;
+@property (nonatomic,readonly) UIImage *fullsizeImage;
 
 - (void)addPhoto:(LOVPhoto *)photo;
 - (void)removeAllPhotos;
 
-- (UIImage *)previewImage:(BOOL)forceUpdate;
+- (UIImage *)outputImageForSize:(CGSize)size;
 
 @end
