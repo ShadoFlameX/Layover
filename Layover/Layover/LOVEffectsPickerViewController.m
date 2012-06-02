@@ -144,10 +144,17 @@
             UIImage *image = [previewCollage outputImageForSize:rect.size];
             dispatch_async(dispatch_get_main_queue(), ^() {
                 imageView.image = image;
+                
+                imageView.alpha = 0.0f;
+                
+                [self.scrollView addSubview:imageView];
+
+                [UIView animateWithDuration:0.25f animations:^{
+                    imageView.alpha = 1.0f;
+                }];
             });
         });
         
-        [self.scrollView addSubview:imageView];
         [self.imageViews addObject:imageView];
         
         if (idx % 2 == 0) leftRect.origin.y += leftRect.size.height + 12.0f;
