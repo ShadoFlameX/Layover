@@ -241,8 +241,12 @@ static const CGFloat PanGesturePadding = 24.0f;
 
     self.imageView.hidden = YES;
     
+    [effectsPicker view];
+    
+    CGRect effectRect = [effectsPicker scrollToEffect:((LOVPhoto *)[self.collage.photos objectAtIndex:self.collage.photos.count - 1]).blendMode];
+    
     [UIView animateWithDuration:0.5f animations:^{
-        tempImageView.frame = [effectsPicker rectForViewWithEffect:((LOVPhoto *)[self.collage.photos objectAtIndex:self.collage.photos.count - 1]).blendMode];
+        tempImageView.frame = effectRect;
         tempImageView.layer.cornerRadius = 8.0f;
         
     } completion:^(BOOL finished) {

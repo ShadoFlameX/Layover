@@ -177,9 +177,22 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (CGRect)rectForViewWithEffect:(CGBlendMode)blendMode
+- (CGRect)scrollToEffect:(CGBlendMode)blendMode
 {
-    return CGRectMake(10, 10 + 20 + 44 + 144 + 12 + 0.5, 144, 144);
+    if (!self.effects)
+        [self reloadContent];
+    
+    NSUInteger idx = [self.effects indexOfObject:[NSNumber numberWithInt:blendMode]];
+    
+    UIImageView *imageView = [self.imageViews objectAtIndex:idx];
+    
+    CGRect rect = imageView.frame;
+    
+    self.scrollView.contentOffset = CGPointMake(0, rect.origin.y - 10);
+    
+    rect.origin.y = 20 + 44 + 10;
+    
+    return rect;
 }
 
 #pragma mark - Actions
