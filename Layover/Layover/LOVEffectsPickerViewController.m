@@ -224,9 +224,9 @@ static const CGFloat outerPadding = 10.0f;
             [self.scrollView addSubview:activityIndicator];
             
             [self.collage renderPreview:^(UIImage *image) {
-                self.completionBlock([imageView convertRect:imageView.bounds toView:[UIApplication sharedApplication].keyWindow]);
                 [activityIndicator removeFromSuperview];
                 [self close:nil];
+                self.completionBlock([self.scrollView convertRect:imageView.frame toView:[UIApplication sharedApplication].keyWindow]);
             }];
 
             *stop = YES;

@@ -215,24 +215,26 @@ static const CGFloat PanGesturePadding = 24.0f;
     LOVEffectsPickerViewController *effectsPicker = [[LOVEffectsPickerViewController alloc] initWithNibName:@"LOVEffectsPickerViewController" bundle:nil];
     effectsPicker.collage = self.collage;
     
+    __weak LOVCollageViewController *weakSelf = self;
+    
     void (^completionBlock)(CGRect) = ^(CGRect effectsRect) {
-        UIImageView *tempImageView = [[UIImageView alloc] initWithImage:self.collage.previewImage];
+        UIImageView *tempImageView = [[UIImageView alloc] initWithImage:weakSelf.collage.previewImage];
         tempImageView.frame = effectsRect;
-        tempImageView.contentMode = self.imageView.contentMode;
-        tempImageView.clipsToBounds = self.imageView.clipsToBounds;
+        tempImageView.contentMode = weakSelf.imageView.contentMode;
+        tempImageView.clipsToBounds = YES;
         tempImageView.layer.cornerRadius = 8.0f;
         
         [[UIApplication sharedApplication].keyWindow addSubview:tempImageView];
         
-        self.imageView.hidden = YES;
+        weakSelf.imageView.hidden = YES;
         
         [UIView animateWithDuration:0.5 animations:^{
-            tempImageView.frame = [self.imageView convertRect:self.imageView.bounds toView:[UIApplication sharedApplication].keyWindow];
+            tempImageView.frame = [weakSelf.view convertRect:weakSelf.imageView.frame toView:[UIApplication sharedApplication].keyWindow];
             tempImageView.layer.cornerRadius = 0.0f;
         } completion:^(BOOL finished) {
             [tempImageView removeFromSuperview];
-            self.imageView.image = self.collage.previewImage;
-            self.imageView.hidden = NO;
+            weakSelf.imageView.image = self.collage.previewImage;
+            weakSelf.imageView.hidden = NO;
         }];
     };
     effectsPicker.completionBlock = completionBlock;
