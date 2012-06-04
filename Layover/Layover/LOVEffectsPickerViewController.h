@@ -15,6 +15,7 @@ typedef void (^LOVEffectsPickerCompletionBlock)(CGRect effectsRect);
 @interface LOVEffectsPickerViewController : UIViewController
 
 @property (nonatomic,strong) LOVCollage *collage;
+@property (nonatomic,assign) CGRect finalRect;
 @property (nonatomic,copy) LOVEffectsPickerCompletionBlock completionBlock;
 
 - (CGRect)scrollToEffect:(CGBlendMode)blendMode;

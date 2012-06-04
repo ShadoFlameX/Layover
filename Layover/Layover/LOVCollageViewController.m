@@ -214,6 +214,7 @@ static const CGFloat PanGesturePadding = 24.0f;
     
     LOVEffectsPickerViewController *effectsPicker = [[LOVEffectsPickerViewController alloc] initWithNibName:@"LOVEffectsPickerViewController" bundle:nil];
     effectsPicker.collage = self.collage;
+    effectsPicker.finalRect = [self.view convertRect:self.imageView.frame toView:[UIApplication sharedApplication].keyWindow];
     
     __weak LOVCollageViewController *weakSelf = self;
     
@@ -242,30 +243,11 @@ static const CGFloat PanGesturePadding = 24.0f;
     UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:effectsPicker];
     navCon.navigationBar.barStyle = UIBarStyleBlack;
     
-    UIImageView *tempImageView = [[UIImageView alloc] initWithImage:self.imageView.image];
-    tempImageView.frame = [self.view convertRect:self.imageView.frame toView:[UIApplication sharedApplication].keyWindow];
-    tempImageView.contentMode = self.imageView.contentMode;
-    tempImageView.clipsToBounds = self.imageView.clipsToBounds;
-    
-    [[UIApplication sharedApplication].keyWindow addSubview:tempImageView];
-
     self.imageView.hidden = YES;
-    
-    [effectsPicker view];
-    
-    CGRect effectRect = [effectsPicker scrollToEffect:((LOVPhoto *)[self.collage.photos objectAtIndex:self.collage.photos.count - 1]).blendMode];
-    
-    [UIView animateWithDuration:0.5f animations:^{
-        tempImageView.frame = effectRect;
-        tempImageView.layer.cornerRadius = 8.0f;
-        
-    } completion:^(BOOL finished) {
-        self.toolbar.userInteractionEnabled = YES;
-    }];
     
     [self presentViewController:navCon animated:YES completion:^{
         self.imageView.hidden = NO;
-        [tempImageView performSelector:@selector(removeFromSuperview) withObject:nil afterDelay:0.75];
+        self.toolbar.userInteractionEnabled = YES;
     }];
 }
 

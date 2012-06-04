@@ -15,11 +15,13 @@ static const CGFloat outerPadding = 10.0f;
 
 @interface LOVEffectsPickerViewController () {
     dispatch_queue_t backgroundQueue;
+    BOOL transitionComplete;
 }
 
 @property (nonatomic,strong) IBOutlet UIScrollView *scrollView;
 @property (nonatomic,strong) NSArray *effects;
 @property (nonatomic,strong) NSMutableArray *imageViews;
+@property (nonatomic,strong) UIImageView *transitionImageView;
 
 - (void)setup;
 - (void)reloadContent;
@@ -31,10 +33,12 @@ static const CGFloat outerPadding = 10.0f;
 #pragma mark - Properties
 
 @synthesize collage = m_collage;
+@synthesize finalRect = m_finalRect;
 @synthesize completionBlock = m_completionBlock;
 @synthesize scrollView = m_scrollView;
 @synthesize effects = m_effects;
 @synthesize imageViews = m_imageViews;
+@synthesize transitionImageView = m_transitionImageView;
 
 - (void)setEffects:(NSArray *)effects
 {
@@ -65,6 +69,9 @@ static const CGFloat outerPadding = 10.0f;
 - (void)setup
 {
     self.title = NSLocalizedString(@"Choose Effect", @"view title");
+    
+    self.finalRect = CGRectNull;
+    transitionComplete = NO;
     
     self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     
@@ -112,6 +119,41 @@ static const CGFloat outerPadding = 10.0f;
     [super viewDidUnload];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    if (CGRectIsNull(self.finalRect))
+        return;
+    
+    self.transitionImageView = [[UIImageView alloc] initWithImage:self.collage.previewImage];
+    self.transitionImageView.frame = self.finalRect;
+    self.transitionImageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.transitionImageView.clipsToBounds = YES;
+    
+    [[UIApplication sharedApplication].keyWindow addSubview:self.transitionImageView];
+    
+    CGRect effectRect = [self scrollToEffect:((LOVPhoto *)[self.collage.photos objectAtIndex:self.collage.photos.count - 1]).blendMode];
+    
+    [UIView animateWithDuration:0.5f animations:^{
+        self.transitionImageView.frame = effectRect;
+        self.transitionImageView.layer.cornerRadius = 8.0f;
+        
+    } completion:^(BOOL finished) {
+        transitionComplete = YES;
+        
+        CGBlendMode blendMode = ((LOVPhoto *)[self.collage.photos objectAtIndex:self.collage.photos.count - 1]).blendMode;
+        NSUInteger index = [self.effects indexOfObject:[NSNumber numberWithInt:blendMode]];
+        
+        if (self.imageViews.count > index) {
+            UIImageView *imageView = [self.imageViews objectAtIndex:index];
+            if (imageView.image) {
+                [self.transitionImageView removeFromSuperview];
+            }
+        }
+    }];
+}
+
 - (void)reloadContent
 {
     [self.imageViews enumerateObjectsUsingBlock:^(UIImageView *imageView, NSUInteger idx, BOOL *stop) {
@@ -157,9 +199,17 @@ static const CGFloat outerPadding = 10.0f;
             
             [weakSelf.scrollView addSubview:imageView];
             
-            [UIView animateWithDuration:0.35f delay:0.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            LOVPhoto *photo = [weakSelf.collage.photos objectAtIndex:weakSelf.collage.photos.count - 1];
+            
+            if (photo.blendMode == [blendNum intValue] && transitionComplete) {
                 imageView.alpha = 1.0f;
-            } completion:nil];
+                [self.transitionImageView removeFromSuperview];
+            
+            } else {
+                [UIView animateWithDuration:0.35f delay:0.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                    imageView.alpha = 1.0f;
+                } completion:nil];
+            }
         }];
         
         [self.imageViews addObject:imageView];
