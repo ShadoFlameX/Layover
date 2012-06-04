@@ -218,8 +218,14 @@ static const CGFloat outerPadding = 10.0f;
             LOVPhoto *topPhoto = [self.collage.photos objectAtIndex:self.collage.photos.count - 1];
             topPhoto.blendMode = [[self.effects objectAtIndex:idx] intValue];
             
+            UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+            activityIndicator.center = imageView.center;
+            [activityIndicator startAnimating];
+            [self.scrollView addSubview:activityIndicator];
+            
             [self.collage renderPreview:^(UIImage *image) {
                 self.completionBlock([imageView convertRect:imageView.bounds toView:[UIApplication sharedApplication].keyWindow]);
+                [activityIndicator removeFromSuperview];
                 [self close:nil];
             }];
 
