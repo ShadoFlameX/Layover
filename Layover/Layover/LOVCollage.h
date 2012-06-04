@@ -10,6 +10,8 @@
 
 @class LOVPhoto;
 
+typedef void (^LOVCollageRenderCompletionBlock)(UIImage *image);
+
 @interface LOVCollage : NSObject
 
 @property (nonatomic,readonly) NSArray *photos;
@@ -20,5 +22,7 @@
 - (void)removeAllPhotos;
 
 - (UIImage *)outputImageForSize:(CGSize)size;
+- (void)renderPreview:(LOVCollageRenderCompletionBlock)completionBlock;
+- (void)renderOutputImageForSize:(CGSize)size completion:(LOVCollageRenderCompletionBlock)completionBlock;
 
 @end

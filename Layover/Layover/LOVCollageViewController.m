@@ -332,21 +332,23 @@ static const CGFloat PanGesturePadding = 24.0f;
     }
     
     [self.collage addPhoto:photo];
+    self.selectedPhoto = photo;
     
-    dispatch_async(dispatch_get_main_queue(), ^() {
-        self.selectedPhoto = photo;
-        self.imageView.image = self.collage.previewImage;
-        [self.loadingView stopAnimating];
+    __weak LOVCollageViewController *weakSelf = self;
+
+    [self.collage renderPreview:^(UIImage *image) {
+        weakSelf.imageView.image = image;
+        [weakSelf.loadingView stopAnimating];
         
-        if (self.imageView.alpha != 1.0f) {
-            self.imageView.transform = CGAffineTransformMakeScale(1.15f, 1.15f);
-        
+        if (weakSelf.imageView.alpha != 1.0f) {
+            weakSelf.imageView.transform = CGAffineTransformMakeScale(1.15f, 1.15f);
+            
             [UIView animateWithDuration:0.5f animations:^{
-                self.imageView.alpha = 1.0f;
-                self.imageView.transform = CGAffineTransformIdentity;
+                weakSelf.imageView.alpha = 1.0f;
+                weakSelf.imageView.transform = CGAffineTransformIdentity;
             }];
         }
-    });
+    }];
 }
 
 - (void)selectNextPhoto:(UITapGestureRecognizer *)gestureRecognizer

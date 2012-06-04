@@ -148,20 +148,19 @@ static const CGFloat outerPadding = 10.0f;
         LOVPhoto *topPhoto = [previewCollage.photos objectAtIndex:previewCollage.photos.count - 1];
         topPhoto.blendMode = [blendNum intValue];
         
-        dispatch_async(backgroundQueue, ^() {
-            UIImage *image = [previewCollage outputImageForSize:rect.size];
-            dispatch_async(dispatch_get_main_queue(), ^() {
-                imageView.image = image;
-                
-                imageView.alpha = 0.0f;
-                
-                [self.scrollView addSubview:imageView];
-
-                [UIView animateWithDuration:0.35f delay:0.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                    imageView.alpha = 1.0f;
-                } completion:nil];
-            });
-        });
+        __weak LOVEffectsPickerViewController *weakSelf = self;
+        
+        [previewCollage renderOutputImageForSize:rect.size completion:^(UIImage *image) {
+            imageView.image = image;
+            
+            imageView.alpha = 0.0f;
+            
+            [weakSelf.scrollView addSubview:imageView];
+            
+            [UIView animateWithDuration:0.35f delay:0.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                imageView.alpha = 1.0f;
+            } completion:nil];
+        }];
         
         [self.imageViews addObject:imageView];
         

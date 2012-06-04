@@ -10,7 +10,9 @@
 #import "LOVPhoto.h"
 #import "CGGeometry+LayoverExtensions.h"
 
-@interface LOVCollage ()
+@interface LOVCollage () {
+    dispatch_queue_t backgroundQueue;
+}
 
 @property (nonatomic,strong) NSMutableArray *mutablePhotos;
 @property (nonatomic,strong,readwrite) UIImage *previewImage;
@@ -60,6 +62,7 @@
     self = [super init];
     if (self) {
         self.mutablePhotos = [NSMutableArray array];
+        backgroundQueue = dispatch_queue_create("com.skeuo.LOVCollage.backgroundqueue", DISPATCH_QUEUE_SERIAL);        
     }
     return self;
 }
@@ -68,6 +71,8 @@
 {
     // this will de-register all observers
     [self removeAllPhotos];
+    
+    dispatch_release(backgroundQueue);
 }
 
 #pragma mark - Image Processing
@@ -121,6 +126,26 @@
     CGImageRelease(newImageRef);
     
     return newImage;
+}
+
+- (void)renderPreview:(LOVCollageRenderCompletionBlock)completionBlock
+{
+    dispatch_async(backgroundQueue, ^() {
+        UIImage *image = [self previewImage];
+        dispatch_async(dispatch_get_main_queue(), ^() {
+            completionBlock(image);
+        });
+    });
+}
+
+- (void)renderOutputImageForSize:(CGSize)size completion:(LOVCollageRenderCompletionBlock)completionBlock
+{
+    dispatch_async(backgroundQueue, ^() {
+        UIImage *image = [self outputImageForSize:size];
+        dispatch_async(dispatch_get_main_queue(), ^() {
+            completionBlock(image);
+        });
+    });
 }
 
 #pragma mark - Actions
