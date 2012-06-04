@@ -257,6 +257,7 @@ static const CGFloat outerPadding = 10.0f;
 
 - (void)close:(id)sender
 {
+    [self.transitionImageView removeFromSuperview];
     [self dismissModalViewControllerAnimated:YES];
 }
 
