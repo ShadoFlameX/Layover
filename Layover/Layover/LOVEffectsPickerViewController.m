@@ -31,7 +31,7 @@ static const CGFloat outerPadding = 10.0f;
 #pragma mark - Properties
 
 @synthesize collage = m_collage;
-@synthesize saveBlock = m_saveBlock;
+@synthesize completionBlock = m_completionBlock;
 @synthesize scrollView = m_scrollView;
 @synthesize effects = m_effects;
 @synthesize imageViews = m_imageViews;
@@ -214,9 +214,16 @@ static const CGFloat outerPadding = 10.0f;
 {
     [self.imageViews enumerateObjectsUsingBlock:^(UIImageView *imageView, NSUInteger idx, BOOL *stop) {
         if (CGRectContainsPoint(imageView.bounds, [gestureRecognizer locationInView:imageView])) {
-            self.saveBlock([[self.effects objectAtIndex:idx] intValue]);
+            
+            LOVPhoto *topPhoto = [self.collage.photos objectAtIndex:self.collage.photos.count - 1];
+            topPhoto.blendMode = [[self.effects objectAtIndex:idx] intValue];
+            
+            [self.collage renderPreview:^(UIImage *image) {
+                self.completionBlock([imageView convertRect:imageView.bounds toView:[UIApplication sharedApplication].keyWindow]);
+                [self close:nil];
+            }];
+
             *stop = YES;
-            [self close:nil];
         }
     }];
 }

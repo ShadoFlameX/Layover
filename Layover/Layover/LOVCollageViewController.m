@@ -215,19 +215,27 @@ static const CGFloat PanGesturePadding = 24.0f;
     LOVEffectsPickerViewController *effectsPicker = [[LOVEffectsPickerViewController alloc] initWithNibName:@"LOVEffectsPickerViewController" bundle:nil];
     effectsPicker.collage = self.collage;
     
-    void (^saveBlock)(CGBlendMode) = ^(CGBlendMode blendMode) {
-        self.selectedPhoto.blendMode = blendMode;
+    void (^completionBlock)(CGRect) = ^(CGRect effectsRect) {
+        UIImageView *tempImageView = [[UIImageView alloc] initWithImage:self.collage.previewImage];
+        tempImageView.frame = effectsRect;
+        tempImageView.contentMode = self.imageView.contentMode;
+        tempImageView.clipsToBounds = self.imageView.clipsToBounds;
+        tempImageView.layer.cornerRadius = 8.0f;
         
-        [self.loadingView startAnimating];
-        dispatch_async(backgroundQueue, ^() {
-            [self.collage previewImage];
-            dispatch_async(dispatch_get_main_queue(), ^() {
-                self.imageView.image = self.collage.previewImage;
-                [self.loadingView stopAnimating];
-            });
-        });
+        [[UIApplication sharedApplication].keyWindow addSubview:tempImageView];
+        
+        self.imageView.hidden = YES;
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            tempImageView.frame = [self.imageView convertRect:self.imageView.bounds toView:[UIApplication sharedApplication].keyWindow];
+            tempImageView.layer.cornerRadius = 0.0f;
+        } completion:^(BOOL finished) {
+            [tempImageView removeFromSuperview];
+            self.imageView.image = self.collage.previewImage;
+            self.imageView.hidden = NO;
+        }];
     };
-    effectsPicker.saveBlock = saveBlock;
+    effectsPicker.completionBlock = completionBlock;
     
     UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:effectsPicker];
     navCon.navigationBar.barStyle = UIBarStyleBlack;
