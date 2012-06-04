@@ -44,6 +44,7 @@ static const CGFloat PanGesturePadding = 24.0f;
 @property (nonatomic,strong) UIRotationGestureRecognizer *rotationGesture;
 
 - (void)addImage:(UIImage *)image;
+- (void)addImages:(NSArray *)images;
 
 @end
 
@@ -116,8 +117,7 @@ static const CGFloat PanGesturePadding = 24.0f;
     
     [self.view addSubview:self.loadingView];
     
-    [self addImage:[UIImage imageNamed:@"photo1.png"]];
-    [self addImage:[UIImage imageNamed:@"photo2.png"]];
+    [self addImages:[NSArray arrayWithObjects:[UIImage imageNamed:@"photo1.png"],[UIImage imageNamed:@"photo2.png"],nil]];
 }
 
 - (void)viewDidUnload
@@ -294,37 +294,44 @@ static const CGFloat PanGesturePadding = 24.0f;
 
 - (void)addImage:(UIImage *)image
 {
-    NSData *imageData = UIImagePNGRepresentation(image);
-    
-    NSURL *fileURL = nil;
-    NSUInteger i = 0;
-    NSError *error = nil;
-    do {
-        fileURL = [[[NSFileManager defaultManager] URLForImagesDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"image-%d.png",i]];
-        i++;
-    } while ([fileURL checkResourceIsReachableAndReturnError:&error]);
-    
-    if (error && [((NSError *)[[error userInfo] objectForKey:NSUnderlyingErrorKey]) code] != FileNotFoundErrorCode) {
-        NSLog(@"%@",error);
-        return;
+    [self addImages:[NSArray arrayWithObject:image]];
+}
+
+- (void)addImages:(NSArray *)images
+{
+    for (UIImage *image in images) {
+        NSData *imageData = UIImagePNGRepresentation(image);
+        
+        NSURL *fileURL = nil;
+        NSUInteger i = 0;
+        NSError *error = nil;
+        do {
+            fileURL = [[[NSFileManager defaultManager] URLForImagesDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"image-%d.png",i]];
+            i++;
+        } while ([fileURL checkResourceIsReachableAndReturnError:&error]);
+        
+        if (error && [((NSError *)[[error userInfo] objectForKey:NSUnderlyingErrorKey]) code] != FileNotFoundErrorCode) {
+            NSLog(@"%@",error);
+            return;
+        }
+        
+        BOOL success = [imageData writeToURL:fileURL atomically:YES];
+        
+        if (!success) {
+            NSLog(@"Failed writing image to URL: %@",fileURL);
+            return;
+        }
+        
+        LOVPhoto *photo = [LOVPhoto photoWithImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:fileURL]]];
+        
+        if (self.collage.photos.count > 0) {
+            photo.blendMode = kCGBlendModeScreen;
+            photo.alpha = 0.5f;
+        }
+        
+        [self.collage addPhoto:photo];
+        self.selectedPhoto = photo;
     }
-    
-    BOOL success = [imageData writeToURL:fileURL atomically:YES];
-    
-    if (!success) {
-        NSLog(@"Failed writing image to URL: %@",fileURL);
-        return;
-    }
-    
-    LOVPhoto *photo = [LOVPhoto photoWithImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:fileURL]]];
-    
-    if (self.collage.photos.count > 0) {
-        photo.blendMode = kCGBlendModeScreen;
-        photo.alpha = 0.5f;
-    }
-    
-    [self.collage addPhoto:photo];
-    self.selectedPhoto = photo;
     
     __weak LOVCollageViewController *weakSelf = self;
 
