@@ -11,6 +11,8 @@
 #import "LOVPhoto.h"
 #import "LOVCollage.h"
 
+static const CGFloat outerPadding = 10.0f;
+
 @interface LOVEffectsPickerViewController () {
     dispatch_queue_t backgroundQueue;
 }
@@ -123,7 +125,7 @@
     CGRect containerRect;
     __block CGRect leftRect, rightRect;
     
-    containerRect = CGRectInset(self.view.bounds, 10.0f, 10.0f);
+    containerRect = CGRectInset(self.view.bounds, outerPadding, outerPadding);
     containerRect.size.height = 144.0f;
     
     CGRectDivide(containerRect, &leftRect, &rightRect, floorf(containerRect.size.width/2.0f), CGRectMinXEdge);
@@ -188,9 +190,16 @@
     
     CGRect rect = imageView.frame;
     
-    self.scrollView.contentOffset = CGPointMake(0, rect.origin.y - 10);
+    CGFloat additionalOffset = 0;
+    CGFloat maxOffsetY = self.scrollView.contentSize.height - self.scrollView.bounds.size.height;
     
-    rect.origin.y = 20 + 44 + 10;
+    if (rect.origin.y - outerPadding > maxOffsetY) {
+        additionalOffset = rect.origin.y - outerPadding - maxOffsetY;
+    }
+    
+    self.scrollView.contentOffset = CGPointMake(0, rect.origin.y - outerPadding - additionalOffset);
+    
+    rect.origin.y = 20 + 44 + outerPadding + additionalOffset;
     
     return rect;
 }
