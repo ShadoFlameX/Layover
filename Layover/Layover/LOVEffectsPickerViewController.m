@@ -78,7 +78,6 @@ static const CGFloat outerPadding = 10.0f;
     backgroundQueue = dispatch_queue_create("com.skeuo.LOVEffectsPickerViewController.backgroundqueue", DISPATCH_QUEUE_SERIAL);
     
     self.effects = [NSArray arrayWithObjects:
-        [NSNumber numberWithInt:kCGBlendModeNormal],
         [NSNumber numberWithInt:kCGBlendModeMultiply],
         [NSNumber numberWithInt:kCGBlendModeScreen],
         [NSNumber numberWithInt:kCGBlendModeOverlay],
@@ -94,6 +93,7 @@ static const CGFloat outerPadding = 10.0f;
         [NSNumber numberWithInt:kCGBlendModeSaturation],
         [NSNumber numberWithInt:kCGBlendModeColor],
         [NSNumber numberWithInt:kCGBlendModeLuminosity],
+        [NSNumber numberWithInt:kCGBlendModeNormal],
         nil];
     
     self.imageViews = [NSMutableArray array];
@@ -110,6 +110,8 @@ static const CGFloat outerPadding = 10.0f;
     
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(close:)];
     self.navigationItem.leftBarButtonItem = cancelButton;
+    
+    self.scrollView.userInteractionEnabled = NO;
     
     [self reloadContent];
 }
@@ -152,6 +154,8 @@ static const CGFloat outerPadding = 10.0f;
             }
         }
     }];
+    
+    [self updateVisibleEffects];
 }
 
 - (void)reloadContent
@@ -175,48 +179,22 @@ static const CGFloat outerPadding = 10.0f;
     rightRect.origin.x += 6.0f;
     rightRect.size.width -= 6.0f;
     
-    [self.effects enumerateObjectsUsingBlock:^(NSNumber *blendNum, NSUInteger idx, BOOL *stop) {
-        CGRect rect = (idx % 2 == 0) ? leftRect : rightRect;
+    for (int i=0; i<self.effects.count; ++i) {
+        CGRect rect = (i % 2 == 0) ? leftRect : rightRect;
         
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:rect];
         imageView.clipsToBounds = YES;
         imageView.layer.cornerRadius = 8.0f;
+        imageView.hidden = YES;
         
-        LOVCollage *previewCollage = [[LOVCollage alloc] init];
-        for (LOVPhoto *photo in self.collage.photos) {
-            [previewCollage addPhoto:[photo copy]];
-        }
-        
-        LOVPhoto *topPhoto = [previewCollage.photos objectAtIndex:previewCollage.photos.count - 1];
-        topPhoto.blendMode = [blendNum intValue];
-        
-        __weak LOVEffectsPickerViewController *weakSelf = self;
-        
-        [previewCollage renderOutputImageForSize:rect.size completion:^(UIImage *image) {
-            imageView.image = image;
-            
-            imageView.alpha = 0.0f;
-            
-            [weakSelf.scrollView addSubview:imageView];
-            
-            LOVPhoto *photo = [weakSelf.collage.photos objectAtIndex:weakSelf.collage.photos.count - 1];
-            
-            if (photo.blendMode == [blendNum intValue] && transitionComplete) {
-                imageView.alpha = 1.0f;
-                [self.transitionImageView removeFromSuperview];
-            
-            } else {
-                [UIView animateWithDuration:0.35f delay:0.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                    imageView.alpha = 1.0f;
-                } completion:nil];
-            }
-        }];
-        
+        [self.scrollView addSubview:imageView];
         [self.imageViews addObject:imageView];
         
-        if (idx % 2 == 0) leftRect.origin.y += leftRect.size.height + 12.0f;
-        else rightRect.origin.y += rightRect.size.height + 12.0f;
-    }];
+        if (i % 2 == 0)
+            leftRect.origin.y += leftRect.size.height + 12.0f;
+        else
+            rightRect.origin.y += rightRect.size.height + 12.0f;
+    }
     
     NSUInteger rows = ceilf((CGFloat)self.effects.count / 2.0f);
     
@@ -253,6 +231,59 @@ static const CGFloat outerPadding = 10.0f;
     return rect;
 }
 
+- (void)updateVisibleEffects
+{
+    for (int i =0; i<self.imageViews.count; ++i) {
+        UIImageView *imageView = [self.imageViews objectAtIndex:i];
+        
+        if (!imageView.hidden || imageView.image)
+            continue;
+        
+        CGRect loadableRect = self.scrollView.frame;
+        if (transitionComplete) {
+            // after initial loading we should load a little before and after
+            loadableRect.origin.y -= loadableRect.size.height/3;
+        }
+        loadableRect.size.height *= 2;
+        
+        if (!CGRectIntersectsRect(loadableRect, [self.scrollView convertRect:imageView.frame toView:self.view]))
+            continue;
+        
+        imageView.hidden = NO;
+        
+        LOVCollage *previewCollage = [[LOVCollage alloc] init];
+        for (LOVPhoto *photo in self.collage.photos) {
+            [previewCollage addPhoto:[photo copy]];
+        }
+        
+        CGBlendMode blendMode = [[self.effects objectAtIndex:i] intValue];
+        
+        LOVPhoto *topPhoto = [previewCollage.photos objectAtIndex:previewCollage.photos.count - 1];
+        topPhoto.blendMode = blendMode;
+        
+        __weak LOVEffectsPickerViewController *weakSelf = self;
+        
+        [previewCollage renderOutputImageForSize:imageView.frame.size completion:^(UIImage *image) {
+            imageView.image = image;
+            
+            imageView.alpha = 0.0f;
+            
+            LOVPhoto *photo = [weakSelf.collage.photos objectAtIndex:weakSelf.collage.photos.count - 1];
+            
+            if (photo.blendMode == blendMode && transitionComplete) {
+                imageView.alpha = 1.0f;
+                [weakSelf.transitionImageView removeFromSuperview];
+                weakSelf.scrollView.userInteractionEnabled = YES;
+            
+            } else {
+                [UIView animateWithDuration:0.35f delay:0.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                    imageView.alpha = 1.0f;
+                } completion:nil];
+            }
+        }];        
+    }
+}
+
 #pragma mark - Actions
 
 - (void)close:(id)sender
@@ -263,6 +294,9 @@ static const CGFloat outerPadding = 10.0f;
 
 - (void)handleTap:(UITapGestureRecognizer *)gestureRecognizer
 {
+    if (!self.scrollView.userInteractionEnabled)
+        return;
+    
     [self.imageViews enumerateObjectsUsingBlock:^(UIImageView *imageView, NSUInteger idx, BOOL *stop) {
         if (CGRectContainsPoint(imageView.bounds, [gestureRecognizer locationInView:imageView])) {
             
@@ -283,6 +317,13 @@ static const CGFloat outerPadding = 10.0f;
             *stop = YES;
         }
     }];
+}
+
+#pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [self updateVisibleEffects];
 }
 
 @end

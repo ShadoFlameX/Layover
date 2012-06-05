@@ -12,7 +12,7 @@
 
 typedef void (^LOVEffectsPickerCompletionBlock)(CGRect effectsRect);
 
-@interface LOVEffectsPickerViewController : UIViewController
+@interface LOVEffectsPickerViewController : UIViewController <UIScrollViewDelegate>
 
 @property (nonatomic,strong) LOVCollage *collage;
 @property (nonatomic,assign) CGRect finalRect;
